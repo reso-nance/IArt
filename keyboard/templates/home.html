@@ -1,0 +1,159 @@
+{% include 'header.min.html' %}
+            
+<script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function() {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home');
+        const keys = document.querySelectorAll(".key"),
+          hints = document.querySelectorAll(".hints");
+        var octave = 60 // midi number corresponding to the center C
+        
+        socket.on('weightUpdate', function(data) {
+           console.log("received markov weights", data);
+           var iframe = document.getElementById('markovVisualisation');
+           if (iframe == null) return;
+           var iWindow = (iframe).contentWindow;
+           iWindow.postMessage({"weights":data.weights, "names":data.names}, 'http://localhost:8080');
+           //~ var event = new CustomEvent('myCustomEvent', { detail: weights });
+            //~ iWindow.document.dispatchEvent(event);
+        });
+        
+        //~ $(document).on('change','.midiSlider',function(event) {
+        $(document).on('input','.midiSlider',function(event) {
+            control = parseInt($(event.target).attr('data-number'),10);
+            //~ console.log('sent cc ',control, $(this).val());
+            socket.emit('midiSlider',{messagetype:"CC",control:control, value:$(this).val()});
+            
+        });
+        
+        $(document).on('change','.CCnumber',function(event) {
+            const name = $(event.target).attr('name');
+            const val = $(this).val();
+            console.log(name,val);
+            $('#'+name).attr("data-number", val.toString());
+        });
+ 
+        function playNote(e) {
+            const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`),
+            key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+            if (!key || key.getAttribute("data-pressed") == "true") return;
+            const keyNote = key.getAttribute("data-note");
+            key.setAttribute("data-pressed", "true");
+            const midiNote = parseInt(key.getAttribute("data-midi"),10) + octave;
+            //~ console.log("playing midi ",midiNote);
+            socket.emit("midiOut", {"type":"note_on", "note":midiNote});
+            key.classList.add("playing");
+        }
+        
+        function stopNote(e) {
+            key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+            if (!key) return;
+            const midiNote = parseInt(key.getAttribute("data-midi"),10) + octave;
+            key.setAttribute("data-pressed", "false");
+            key.classList.remove("playing");
+            //~ console.log("stop midi ",midiNote);
+            socket.emit("midiOut", {"type":"note_off", "note":midiNote});
+        }
+        //~ function removeTransition(e) {
+          //~ if (e.propertyName !== "transform") return;
+          //~ this.classList.remove("playing");
+        //~ }
+
+        function hintsOn(e, index) {
+          e.setAttribute("style", "transition-delay:" + index * 50 + "ms");
+        }
+        hints.forEach(hintsOn);
+        //~ keys.forEach(key => key.addEventListener("transitionend", removeTransition));
+        window.addEventListener("keydown", playNote);
+        window.addEventListener("keyup", stopNote);
+
+    });
+    
+    </script>
+    <style>
+        .padding-0{
+            padding-right:0;
+            padding-left:0;
+        }
+    </style>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/custom.min.css" rel="stylesheet">
+    <link href="static/css/piano.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid" style="max-height:100%; max-width:100%;margin-top:0px; position:absolute; bottom:0;">
+            {% with messages = get_flashed_messages() %}
+               {% if messages %}
+                  {% for message in messages %}
+                     {{ message }}
+                  {% endfor %}
+               {% endif %}
+            {% endwith %}
+
+            <iframe id="markovVisualisation"
+                src="static/markov/index.html" style="width: 97vw;height:78vh;position: relative;display:block;" frameborder="0" allowfullscreen>
+            </iframe>
+
+                <section id="main" >
+                  <div class="keys">
+                    <div data-key="81" data-midi="0" data-pressed="false" class="key" data-note="C">
+                        <span class="hints">Q</span>
+                    </div>
+                    <div data-key="90" data-midi="1" class="key sharp" data-note="C#">
+                        <span class="hints">Z</span>
+                    </div>
+                    <div data-key="83" data-midi="2" class="key" data-note="D">
+                        <span class="hints">S</span>
+                    </div>
+                    <div data-key="69" data-midi="3" class="key sharp" data-note="D#">
+                        <span class="hints">E</span>
+                    </div>
+                    <div data-key="68" data-midi="4" class="key" data-note="E">
+                        <span class="hints">D</span>
+                    </div>
+                    <div data-key="70" data-midi="5" class="key" data-note="F">
+                        <span class="hints">F</span>
+                    </div>
+                    <div data-key="84" data-midi="6" class="key sharp" data-note="F#">
+                        <span class="hints">T</span>
+                    </div>
+                    <div data-key="71" data-midi="7" class="key" data-note="G">
+                        <span class="hints">G</span>
+                    </div>
+                    <div data-key="89" data-midi="8" class="key sharp" data-note="G#">
+                        <span class="hints">Y</span>
+                    </div>
+                    <div data-key="72" data-midi="9" class="key" data-note="A">
+                        <span class="hints">H</span>
+                    </div>
+                    <div data-key="85" data-midi="10" class="key sharp" data-note="A#">
+                        <span class="hints">U</span>
+                    </div>
+                    <div data-key="74" data-midi="11" class="key" data-note="B">
+                        <span class="hints">J</span>
+                    </div>
+                    <div data-key="75" data-midi="12" class="key" data-note="C">
+                        <span class="hints">K</span>
+                    </div>
+                    <div data-key="79" data-midi="13" class="key sharp" data-note="C#">
+                        <span class="hints">O</span>
+                    </div>
+                    <div data-key="76" data-midi="14" class="key" data-note="D">
+                        <span class="hints">L</span>
+                    </div>
+                    <div data-key="80" data-midi="15" class="key sharp" data-note="D#">
+                        <span class="hints">P</span>
+                    </div>
+                    <div data-key="77" data-midi="16" class="key" data-note="E">
+                        <span class="hints">M</span>
+                    </div>
+                  </div>
+              </section>
+<!--
+            </div>
+-->
+
+</body>
+
+</html>
