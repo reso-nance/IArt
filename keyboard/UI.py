@@ -12,7 +12,7 @@ import random #FIXME only used to debug
 
 mainTitle = "IArt keyboard"
 thread = None
-maxUIupdateRate = 2.0 # in seconds
+maxUIupdateRate = 1.0 # in seconds
 lastUIupdate = datetime.now()
 
 if __name__ == '__main__':
@@ -33,7 +33,7 @@ log.setLevel(logging.ERROR)
 def rte_homePage():
     general_Data = {'title':mainTitle}
     sendDefaultMarkovDataToUI()
-    return render_template('home.html', **general_Data)
+    return render_template('keyboard.html', **general_Data)
     
 @app.route('/shutdown')
 def rte_bye():

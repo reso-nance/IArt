@@ -1,0 +1,47 @@
+{% include 'header.min.html' %}
+            
+<script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function() {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home');
+        
+        
+        
+        //~ $(document).on('change','.midiSlider',function(event) {
+        $(document).on('input','.midiSlider',function(event) {
+            control = parseInt($(event.target).attr('data-number'),10);
+            //~ console.log('sent cc ',control, $(this).val());
+            socket.emit('midiSlider',{messagetype:"CC",control:control, value:$(this).val()});
+            
+        });
+
+    });
+    
+    </script>
+    <style>
+        .padding-0{
+            padding-right:0;
+            padding-left:0;
+        }
+    </style>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/custom.min.css" rel="stylesheet">
+    <link href="static/css/piano.css" rel="stylesheet">
+</head>
+
+<body style="background:#222;">
+    <div class="container-fluid" style="max-height:100%; max-width:100%;margin-top:0px; position:absolute; bottom:0;">
+        {% with messages = get_flashed_messages() %}
+           {% if messages %}
+              {% for message in messages %}
+                 {{ message }}
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
+    <div class="jumbotron">
+        <h1 class="display-4" id="filler">Appuyez pour commencer</h1>
+    </div>
+
+</body>
+
+</html>
