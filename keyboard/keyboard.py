@@ -15,6 +15,7 @@ lastKeyPressed = None
 keyboardListener = None
 keyboardController = keyboard.Controller()
 lastKeyPressedTime = datetime.now()
+removeSilenceFromVisualisation = True
 period = 10. # in ms
 playThreeshold = 1.5 # inactivity time after which the generated sequence will play (in seconds)
 playBuffer = numpy.array([])
@@ -52,11 +53,13 @@ def on_release(key):
     if keyPressed in keysCurrentlyPressed : del keysCurrentlyPressed[keyPressed]
 
 def getMarkovProbas(observations) :
-    global keyToNote
+    global keyToNote, removeSilenceFromVisualisation
+    if removeSilenceFromVisualisation : observations = observations[observations != "0"]
     markovChain = mc.MarkovChain().from_data(observations)
     names = markovChain.states
     weights = markovChain.observed_p_matrix.tolist()
-    weights = [[round(w, 2) for w in W] for W in weights] # round floats to 3 digits
+    # ~ weights = [[round(w, 2) for w in W] for W in weights] # round floats to 3 digits
+    weights = [[w for w in W] for W in weights]
     names = [keyToNote[n] for n in names] # translate keystrokes into corresponding readable note names
     print("states :", names)
     print("probas :", weights)

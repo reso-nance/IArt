@@ -152,7 +152,7 @@ myApp.directive('stDiagram', function($compile) {
       .style('text-anchor', 'middle')
       .attr('startOffset', '50%')
       .style('fill', 'darkOrange')
-      .text(function(d, i) { return d.value });
+      .text(function(d, i) { return Math.round(d.value*10000)/100 });
       links.exit().remove();
 
       // State Indicator
