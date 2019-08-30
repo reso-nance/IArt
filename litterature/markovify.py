@@ -10,6 +10,9 @@ def generateText():
     pass
     
 def changeParameter(parameter):
-    for name, value in parameters.items() :
-        print("changed parameter %s to %i" % (name, value))
+    for name, value in parameter.items() :
+        print("changed parameter %s to %s" % (name, value))
+        if value == "ON" : value = True
+        elif value == "OFF" : value = False
+        else value = int(value)
     pass

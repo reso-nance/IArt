@@ -17,7 +17,7 @@ def listen():
         line = arduino.readline();
         if line:
             line = line.decode("utf-8","ignore").replace("\r\n", "")
-            print (line)
-            if "pot" in line : name, value = line.split(":")
-            elif "start" in line : name, value = "start", True
-            markovify.changeParameter({name:value})
+            try : 
+                name, value = line.split(":")
+                markovify.changeParameter({name:value})
+            except Exception as e : print(e)
