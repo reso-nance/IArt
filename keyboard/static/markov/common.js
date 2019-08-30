@@ -250,7 +250,8 @@ myApp.directive('stDiagram', function($compile) {
         scope.$emit('stateChange', next);
       });
       currentStateG
-      .transition().duration(+scope.duration * 0.25)
+      //~ .transition().duration(+scope.duration * 0.25)
+      .transition().duration(+scope.duration * 0.05)
       .style('opacity', 1)
       .ease('cubic-in')
       .attrTween('transform', function() {
@@ -265,7 +266,8 @@ myApp.directive('stDiagram', function($compile) {
           return 'translate(' + p.array() + ') scale(' + s(t) + ')';
         };
       })
-      .transition().duration(+scope.duration * 0.5)
+      //~ .transition().duration(+scope.duration * 0.5)
+      .transition().duration(+scope.duration * 0.05)
       .ease('linear')
       .attrTween('transform', function() {
         var l = path.getTotalLength();
@@ -274,7 +276,8 @@ myApp.directive('stDiagram', function($compile) {
           return 'translate(' + [p.x, p.y] + ') scale(1)';
         };
       })
-      .transition().duration(+scope.duration * 0.25)
+      //~ .transition().duration(+scope.duration * 0.25)
+      .transition().duration(+scope.duration * 0.01)
       .ease('bounce-in')
       .attrTween('transform', function() {
         var m = d3.transform(d3.select(this).attr('transform'));

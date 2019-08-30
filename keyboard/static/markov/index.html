@@ -57,7 +57,7 @@
       return $scope.selectedTransition[0] === i
       && $scope.selectedTransition[1] === j;
     };
-    $scope.speedRange = 2;
+    $scope.speedRange = 0.5;
     $scope.$watch('speedRange', function(speed) {
       $scope.duration = 2000 / +speed;
     });
@@ -101,13 +101,17 @@
   var hash = utils.getHash();
   if(hash && hash.grammar) {
     grammarBook = hash.grammar;
-    $scope.nameMatrix = hash.grammar;
+    //~ console.log("hash grammar :",hash.grammar);
+    //~ $scope.nameMatrix = hash.grammar;
+    $scope.nameMatrix = ['--', 'do1', 'do#1', 'ré1', 'mib1', 'mi1', 'fa', 'fa#', 'sol', 'sol#', 'la', 'sib', 'si', 'do2', 'do#2', 'ré2', 'mib2', 'mi2'];
   }
   if(hash && hash.tm) $scope.updateTransitionMatrix(hash.tm);
+  else $scope.updateTransitionMatrix([[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]]);
   //~ else $scope.updateTransitionMatrix([
     //~ [0.5, 0.5],
     //~ [0.5, 0.5]
     //~ ]);
+  
 
   // Validify the inputted matrix
 $scope.transitionMatrixJSON = JSON.stringify($scope.transitionMatrix)
@@ -132,11 +136,14 @@ $scope.$watch('transitionMatrixJSON', function(str) {
   
   // receive POST from parent window
 	window.onmessage = function(e){
-			//~ $scope.nameMatrix = e.data.names;		
+			//~ $scope.nameMatrix = e.data.names;
+			var needReload = ($scope.transitionMatrix.length != e.data.names.length);
+			console.log("reloading ?", needReload);
 			$scope.nameMatrixJSON = JSON.stringify(e.data.names);		
-			//~ $scope.updateTransitionMatrix(e.data.weights);
-			$scope.transitionMatrixJSON = JSON.stringify(e.data.weights);
+			$scope.updateTransitionMatrix(e.data.weights);
+			//~ $scope.transitionMatrixJSON = JSON.stringify(e.data.weights);
 			$scope.$apply();
+			if (needReload) window.location.reload();
 };
 });
 </script>

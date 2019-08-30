@@ -22,17 +22,25 @@
 #  
 
 import os, signal
-import UI
+from threading import Thread
+import UI, keyboard
 
 scriptPath = os.path.abspath(os.path.dirname(__file__))
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
 flaskBind="localhost"
+keyboardThread = None
 
 def exitCleanly():
+    global keyboardThread
+    if keyboardThread is not None : 
+        keyboardThread.stop()
+        print("exited keyboard listener")
     raise SystemExit
     
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exitCleanly) # register this exitCleanly function to be called on sigterm
+    keyboardThread = Thread(target=keyboard.listen)
+    keyboardThread.start()
     try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C
     

@@ -13,6 +13,7 @@
            var iframe = document.getElementById('markovVisualisation');
            if (iframe == null) return;
            var iWindow = (iframe).contentWindow;
+           document.getElementById('markovVisualisation').contentWindow.location.reload();
            iWindow.postMessage({"weights":data.weights, "names":data.names}, 'http://localhost:8080');
            //~ var event = new CustomEvent('myCustomEvent', { detail: weights });
             //~ iWindow.document.dispatchEvent(event);

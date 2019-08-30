@@ -4,13 +4,16 @@
 from flask import Flask, g, render_template, redirect, request, url_for, copy_current_request_context, send_file, flash, Markup
 from flask_socketio import SocketIO, emit
 import os, logging, subprocess, eventlet
-from threading import Thread #FIXME only used to debug
+from datetime import datetime
+# ~ from threading import Thread #FIXME only used to debug
 eventlet.monkey_patch() # needed to make eventlet work asynchronously with socketIO
 
-import random
+import random #FIXME only used to debug
 
 mainTitle = "IArt keyboard"
 thread = None
+maxUIupdateRate = 2.0 # in seconds
+lastUIupdate = datetime.now()
 
 if __name__ == '__main__':
     raise SystemExit("This UI file is not meant to be executed directly. It should be imported as a module.")
@@ -29,10 +32,7 @@ log.setLevel(logging.ERROR)
 @app.route('/')
 def rte_homePage():
     general_Data = {'title':mainTitle}
-    global thread #FIXME debug
-    if thread is None:
-        thread = Thread(target=simulateMarkov)
-        thread.start()
+    sendDefaultMarkovDataToUI()
     return render_template('home.html', **general_Data)
     
 @app.route('/shutdown')
@@ -62,10 +62,36 @@ def sck_shutdown():
         # ~ midi.sendCC(control=int(data["control"]), value=int(data["value"]))
  
 # --------------- FUNCTIONS ----------------
+def sendMarkovDataToUI(weights):
+    global lastUIupdate, maxUIupdateRate
+    lastUpdate = datetime.now() - lastUIupdate
+    if lastUpdate.total_seconds() >= maxUIupdateRate :
+        socketio.emit("weightUpdate", weights, namespace='/home')
+        lastUIupdate = datetime.now()
+        print("updated UI, last update was %f seconds ago" % lastUpdate.total_seconds())
+    
+def sendDefaultMarkovDataToUI():
+    defaultMarkovData = {"names":['--', 'do1', 'do#1', 'ré1', 'mib1', 'mi1', 'fa', 'fa#', 'sol', 'sol#', 'la', 'sib', 'si', 'do2', 'do#2', 'ré2', 'mib2', 'mi2'],
+                  "weights" : [[0.5]*18]*18}
+    socketio.sleep(1)
+    socketio.emit("weightUpdate",defaultMarkovData , namespace='/home')
+
+def genTestData(count):
+    import random, string
+    output = []
+    for i in range(count) :
+        element = []
+        for j in range(count): element += [round(random.random(),2)]
+        output.append(element)
+    print(output)
+    alphabet = list(string.ascii_lowercase)
+    print([alphabet[random.randrange(len(alphabet))] for i in range(count)])
+        
+
 def simulateMarkov() : #FIXME debug
-	while True :
-		socketio.sleep(1)
-		markovWeights = [[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),]]
-		markovNames = ["do","ré","mi","fa"]
-		socketio.emit("weightUpdate", {"weights":markovWeights, "names":markovNames}, namespace='/home')
-		print("updated markov weights :", markovWeights)
+    while True :
+        socketio.sleep(1)
+        markovWeights = [[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),]]
+        markovNames = ["do","ré","mi","fa"]
+        socketio.emit("weightUpdate", {"weights":markovWeights, "names":markovNames}, namespace='/home')
+        print("updated markov weights :", markovWeights)
