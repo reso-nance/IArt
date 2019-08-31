@@ -57,9 +57,9 @@ def initialiseCorpuses():
                 break
         else : print("using precomputed corpus %s" % filename)
         availableCorpuses.append({"name":filenameWithoutExt, "model":filenameWithoutExt+".json"})
-        # ~ with open(filenameWithoutExt+".json", "r", encoding="utf-8") as json_file:
-            # ~ data = json.load(json_file)
+        # ~ with open(filenameWithoutExt+".json", "r", encoding="utf-8") as json_file: data = json.dumps(json.load(json_file))
         # ~ model = markovify.Text.from_json(data)
-        # ~ print(model.make_short_sentence(280))
+        # ~ testSentence = model.make_short_sentence(280)
+        # ~ if testSentence : print(testSentence)
     return
             
