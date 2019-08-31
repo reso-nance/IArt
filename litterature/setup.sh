@@ -15,9 +15,12 @@ echo "
 installing pip packages :"
 pip3 install flask ||exit 2
 pip3 install flask-socketio||exit 2
+pip3 install eventlet||exit 2
+pip3 install markovify||exit 2
+pip3 install spacy||exit 2
+python -m spacy download fr_core_news_sm||exit 2
 #~ pip3 install flask-uploads||exit 2
 #~ pip3 install Cython||exit 2
-pip3 install eventlet||exit 2
 
 echo "
 ------------DONE installing dependencies------------

@@ -4,7 +4,7 @@
 from flask import Flask, g, render_template, redirect, request, url_for, copy_current_request_context, send_file, flash, Markup
 from flask_socketio import SocketIO, emit
 import os, logging, subprocess, eventlet
-eventlet.monkey_patch() # needed to make eventlet work asynchronously with socketIO
+eventlet.monkey_patch(os=False) # needed to make eventlet work asynchronously with socketIO, address eventlet pathlib bug https://github.com/eventlet/eventlet/issues/534
 
 
 mainTitle = "IArt txt"
