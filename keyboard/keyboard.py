@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#  
+#  TODO : remove the silent ending from observations
 from pynput import keyboard
 from datetime import datetime
 import mchmm as mc
@@ -20,13 +20,15 @@ period = 10. # in ms
 playThreeshold = 1.5 # inactivity time after which the generated sequence will play (in seconds)
 playBuffer = numpy.array([])
 lastKeyPlayed = None
+silentEnding = int(playThreeshold*1000 / period) # number of observations that corresponds to the waiting period
+silentEndingRemoved = False # to avoid removing it twice
 
 if __name__ == '__main__':
     raise SystemExit("This keyboard file is not meant to be executed directly. It should be imported as a module.")
  
 
 def on_press(key):
-    global keysCurrentlyPressed, lastKeyPressed, lastKeyPressedTime, playBuffer, observations, monitoredKeys
+    global keysCurrentlyPressed, lastKeyPressed, lastKeyPressedTime, playBuffer, observations, monitoredKeys, silentEndingRemoved
     try: keyPressed = key.char
     except AttributeError: # clear observation on special keys
         playBuffer = numpy.array([])
@@ -40,6 +42,7 @@ def on_press(key):
     lastKeyPressed = keyPressed
     markovData = getMarkovProbas(observations)
     if markovData : UI.sendMarkovDataToUI(markovData)
+    if silentEndingRemoved : silentEndingRemoved = False
 
 def on_release(key):
     global keysCurrentlyPressed, keyboardListener, observations
@@ -68,7 +71,7 @@ def getMarkovProbas(observations) :
     else : return False
 
 def listen() :
-    global keyboardListener, observations,playBuffer, keyboardController, lastKeyPlayed, period, playThreeshold, lastKeyPressedTime
+    global keyboardListener, observations,playBuffer, keyboardController, lastKeyPlayed, period, playThreeshold, lastKeyPressedTime, silentEnding, silentEndingRemoved
     keyboardListener = keyboard.Listener(on_press=on_press, on_release=on_release)
     keyboardListener.start()
     print("starting listening to keyboard events")
@@ -78,6 +81,9 @@ def listen() :
         timeElapsedSinceKeyboard = datetime.now() - lastKeyPressedTime
         if timeElapsedSinceKeyboard.seconds > playThreeshold : # play mode, uninterrupted
             if len(playBuffer) == 0 : # nothing to play yet
+                if not silentEndingRemoved : 
+                    observations = observations[:-silentEnding]
+                    silentEndingRemoved = True
                 if len(observations) > 500 :
                     # ~ print(observations)
                     markovChain = mc.MarkovChain().from_data(observations)

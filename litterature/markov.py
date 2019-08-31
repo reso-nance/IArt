@@ -7,7 +7,7 @@ scriptPath = os.path.abspath(os.path.dirname(__file__))
 corpusPath = scriptPath+"/corpus/"
 availableCorpuses = None
 markovModel = None
-corpusMix = [1.,0.,0.]
+corpusMix = []
 
 # overriding POSifiedText to make use of spacy
 nlp = spacy.load("fr_core_news_sm")
@@ -22,12 +22,25 @@ class POSifiedText(markovify.Text):
 if __name__ == '__main__':
     raise SystemExit("This arduino file is not meant to be executed directly. It should be imported as a module.")
     
-def generateText(NLPmodel, sentenceLength = 280):
-    return NLPmodel.make_short_sentence(sentenceLength)
+def generateModel():
+    global markovModel, corpusMix
+    models = [c["model"] for c in corpusMix]
+    weights = [c["mix"] for c in corpusMix]
+    markovModel = markovify.combine(models, weights)
+    return markovModel
+    
+    
+def generateText(sentenceLength = 280):
+    return generateModel().make_short_sentence(sentenceLength)
     
 def changeParameter(parameter):
+    global corpusMix
     for name, value in parameter.items() :
         print("changed parameter {} to {}".format(name, value))
+        if name == "potA" : corpusMix[0]["mix"] = value
+        elif name == "potB" : corpusMix[1]["mix"] = value
+        elif name == "potC" : corpusMix[2]["mix"] = value
+        elif name == "start" and value is True : print(generateText())
 
 def buildModel(filename):
     if not os.path.isfile(filename) :
@@ -40,26 +53,35 @@ def buildModel(filename):
         json.dump(json.loads(JSONmodel), f, ensure_ascii=False, indent=4)
         return True
 
-def loadModelFromJson(filename):
-    with open(corpusPath+filename, "rt") as f :
-        JSONmodel = f.read()
-    return markovify.Text.from_json(JSONmodel)
+def loadModelFromJson(path):
+    with open(path, "r", encoding="utf-8") as json_file:
+        data = json.dumps(json.load(json_file))
+    model = markovify.Text.from_json(data)
+    return model
 
 def initialiseCorpuses():
     global availableCorpuses
     availableCorpuses = []
-    for filename in glob.glob(corpusPath+"*.txt") :
-        filenameWithoutExt = os.path.splitext(filename)[0]
-        if not os.path.isfile(filenameWithoutExt+".json") :
+    for path in glob.glob(corpusPath+"*.txt") :
+        pathWithoutExt = os.path.splitext(path)[0]
+        filename, filenameWithoutExt = os.path.basename(path), os.path.splitext(os.path.basename(path))[0]
+        if not os.path.isfile(pathWithoutExt+".json") :
             print("new corpus %s found, computing model..." % filename)
-            if not buildModel(filename) :
+            if not buildModel(path) :
                 print("ERROR computing %s model" % filename)
                 break
-        else : print("using precomputed corpus %s" % filename)
-        availableCorpuses.append({"name":filenameWithoutExt, "model":filenameWithoutExt+".json"})
-        # ~ with open(filenameWithoutExt+".json", "r", encoding="utf-8") as json_file: data = json.dumps(json.load(json_file))
-        # ~ model = markovify.Text.from_json(data)
-        # ~ testSentence = model.make_short_sentence(280)
+        else : print("using precomputed corpus %s" % filenameWithoutExt)
+        # ~ availableCorpuses.append({"name":filenameWithoutExt, "file":pathWithoutExt+".json", "model":None, "mix":1.})
+        availableCorpuses.append({"name":filenameWithoutExt, "model":loadModelFromJson(pathWithoutExt+".json"), "mix":1.})
+        # ~ testSentence = availableCorpuses[-1]["model"].make_short_sentence(280)
         # ~ if testSentence : print(testSentence)
+
+    if len(availableCorpuses) < 3 :
+        print("\nNot enough corpuses to continue, needs %i more !" % 3-len(availableCorpuses))
+        raise SystemError
+    for i in range(3): corpusMix.append(availableCorpuses[i])
+    generateModel()
+    print("\n---corpuses initialised successfully---\n")
+    # ~ print(generateText())
     return
             
