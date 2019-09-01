@@ -3,7 +3,7 @@
 #  
 
 import serial
-import markovify
+import markov
 
 arduinoPort='/dev/ttyUSB1' # udevadm info --query=all --name=/dev/ttyUSB0
 baudrate=115200
@@ -22,6 +22,6 @@ def listen():
                 if value == "ON" : value = True
                 elif value == "OFF" : value = False
                 else : value = float(value)/1023. # 10bits to 0~1 float
-                markovify.changeParameter({name:value})
+                markov.changeParameter({name:value})
             except Exception as e : print(e)
 # TODO : handle arduino disconnection SerialException

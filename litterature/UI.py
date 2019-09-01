@@ -8,6 +8,8 @@ eventlet.monkey_patch(os=False) # needed to make eventlet work asynchronously wi
 
 
 mainTitle = "IArt txt"
+lastCorpusMix = None
+lastDisplayedText = None
 
 if __name__ == '__main__':
     raise SystemExit("This UI file is not meant to be executed directly. It should be imported as a module.")
@@ -38,6 +40,8 @@ def rte_bye():
 @socketio.on('connect', namespace='/home')
 def onConnect():
     print("client connected, session id : "+request.sid)
+    if lastCorpusMix is not None : update(lastCorpusMix)
+    if lastDisplayedText is not None : displayText(lastDisplayedText)
 
 @socketio.on('disconnect', namespace='/home')
 def onDisconnect():
@@ -51,3 +55,14 @@ def sck_shutdown():
 
  
 # --------------- FUNCTIONS ----------------
+
+def update(corpusMix):
+    global lastCorpusMix
+    lastCorpusMix = corpusMix
+    UIdata = [{"name":c["name"], "value":c["mix"]} for c in corpusMix]
+    socketio.emit("updateUI", UIdata, namespace='/home')
+
+def displayText(text):
+    global lastDisplayedText
+    lastDisplayedText = text
+    socketio.emit("displayText", text, namespace='/home')

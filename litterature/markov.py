@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #  
 import markovify, os, sys, re, spacy, glob, json
+import UI
 
 scriptPath = os.path.abspath(os.path.dirname(__file__))
 corpusPath = scriptPath+"/corpus/"
@@ -26,12 +27,25 @@ def generateModel():
     global markovModel, corpusMix
     models = [c["model"] for c in corpusMix]
     weights = [c["mix"] for c in corpusMix]
+    # since each corpus has a different size, bigger corpuses tends to be favoritized when mixed along smaller ones
+    # to prevent this behavior, we correct each weight by multiplying it by a bias factor  which is inversely prop to the size of the corpus:
+    # bias (%) = (allCorpus.len - thisCorpus.len) / allCorpus.len
+    # weight = weight * bias
+    totalCorpusesLength = sum([c["length"] for c in corpusMix])
+    lengthBias = [(totalCorpusesLength - c["length"])/totalCorpusesLength for c in corpusMix]
+    weights = [weight * bias for weight,bias in zip(weights,lengthBias)]
+    for i in range(3) : print(corpusMix[i]["name"],corpusMix[i]["mix"], lengthBias[i], weights[i] )
     markovModel = markovify.combine(models, weights)
     return markovModel
     
     
 def generateText(sentenceLength = 280):
-    return generateModel().make_short_sentence(sentenceLength)
+    for i in range(10):
+        text = generateModel().make_short_sentence(sentenceLength)
+        if text is not None : 
+            UI.displayText(text)
+            return
+    print("unable to generate text 10 times in a row")
     
 def changeParameter(parameter):
     global corpusMix
@@ -41,6 +55,7 @@ def changeParameter(parameter):
         elif name == "potB" : corpusMix[1]["mix"] = value
         elif name == "potC" : corpusMix[2]["mix"] = value
         elif name == "start" and value is True : print(generateText())
+
 
 def buildModel(filename):
     if not os.path.isfile(filename) :
@@ -57,7 +72,7 @@ def loadModelFromJson(path):
     with open(path, "r", encoding="utf-8") as json_file:
         data = json.dumps(json.load(json_file))
     model = markovify.Text.from_json(data)
-    return model
+    return {"model":model, "length":len(data)}
 
 def initialiseCorpuses():
     global availableCorpuses
@@ -72,7 +87,8 @@ def initialiseCorpuses():
                 break
         else : print("using precomputed corpus %s" % filenameWithoutExt)
         # ~ availableCorpuses.append({"name":filenameWithoutExt, "file":pathWithoutExt+".json", "model":None, "mix":1.})
-        availableCorpuses.append({"name":filenameWithoutExt, "model":loadModelFromJson(pathWithoutExt+".json"), "mix":1.})
+        model = loadModelFromJson(pathWithoutExt+".json")
+        availableCorpuses.append({"name":filenameWithoutExt,"model":model["model"],"length":model["length"], "mix":.5})
         # ~ testSentence = availableCorpuses[-1]["model"].make_short_sentence(280)
         # ~ if testSentence : print(testSentence)
 
@@ -83,5 +99,12 @@ def initialiseCorpuses():
     generateModel()
     print("\n---corpuses initialised successfully---\n")
     # ~ print(generateText())
+    UI.update(corpusMix)
+    generateText()
     return
             
+def debugText(delay=2):
+    import time, random
+    while True :
+        time.sleep(delay)
+        generateText(random.randrange(200, 800))

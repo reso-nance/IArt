@@ -22,6 +22,7 @@ if __name__ == '__main__':
     arduinoThread = Thread(target=arduino.listen)
     # ~ arduinoThread.start()
     markov.initialiseCorpuses()
+    Thread(target=markov.debugText).start()
     print("---starting web interface on %s:%i---\n" % (flaskBind, HTTPlisteningPort))
     try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C
