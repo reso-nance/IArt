@@ -58,6 +58,11 @@ def sck_shutdown():
 def sendAvailableCorpuses():
     socketio.emit("availableCorpuses",availableCorpuses() , namespace='/home')
 
+@socketio.on('corpusChanged', namespace='/home')
+def changeCorpus(data):
+    index, name = data["index"], data["name"]
+    if markov.corpusMix[index]["name"] != name : markov.changeCorpus(index, name)
+
  
 # --------------- FUNCTIONS ----------------
 
@@ -77,5 +82,5 @@ def availableCorpuses():
     selectedNames = [c["name"] for c in markov.corpusMix]
     return {"names":names, "selectedNames":selectedNames}
 
-def showModal(action):
-    socketio.emit("showModal", action, namespace='/home')
+def navigateModal(action):
+    socketio.emit("navigateCorpus", action, namespace='/home')

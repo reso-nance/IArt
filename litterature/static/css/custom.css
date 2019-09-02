@@ -1,28 +1,3 @@
-nav {
-                width: 100%;
-                height: 40px;
-                border-radius: 6px !important;
-                -moz-border-radius: 6px !important;
-            }
-
-        .nav a{
-            font-size: 1.4em !important;
-        }
-        .glyphicon {
-        font-size: 30px;
-        }
-.nav li{
-padding-right:5px;
-}
-.row.no-gutter {
-  margin-left: 0;
-  margin-right: 0;
-}
-.row.no-gutter [class*='col-']:not(:first-child),
-.row.no-gutter [class*='col-']:not(:last-child) {
-  padding-right: 0;
-  padding-left: 0;
-}
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -50,6 +25,17 @@ padding-right:5px;
   text-align: left;
   vertical-align: middle;
 }
+
+.pill-1 a {
+    color: #3CBCDE;
+}
+.pill-2 a {
+    color: #CB6DFC;
+}
+.pill-3 a {
+    color: #3CDE9F;
+}
+
 
 /* Circle Animation */
 

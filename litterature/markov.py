@@ -57,11 +57,16 @@ def changeParameter(parameter):
         elif name == "potB" : corpusMix[1]["mix"] = value
         elif name == "potC" : corpusMix[2]["mix"] = value
         elif name == "start" and value is True : print(generateText())
-        elif ("prev" in name or "next" in name) and value is True : UI.showModal(name)
+        elif ("prev" in name or "next" in name) and value is True : UI.navigateModal(name)
         if name in ("potA", "potB", "potC"): UI.update(corpusMix)
 
-def changeModel(modelIndex, modelName, action="prev"):
-    pass
+def changeCorpus(index, name):
+    global corpusMix
+    print("corpus #%i changed to %s" % (index, name))
+    newCorpus = next(c for c in availableCorpuses if c["name"] == name)
+    newCorpus["mix"] = corpusMix[index]["mix"]
+    corpusMix[index] = newCorpus
+    UI.update(corpusMix)
 
 def buildModel(filename):
     if not os.path.isfile(filename) :
@@ -106,7 +111,6 @@ def initialiseCorpuses():
     print("\n---corpuses initialised successfully---\n")
     # ~ print(generateText())
     UI.update(corpusMix)
-    generateText()
     return
 
 def debugText(delay=4):

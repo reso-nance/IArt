@@ -10,27 +10,33 @@
         var gauge2 = Gauge(document.getElementById("gauge2"),{max: 100,value: 0});
         var gauge3 = Gauge(document.getElementById("gauge3"),{max: 100,value: 0});
         var availableCorpuses = [];
-        var isModalOpen = false;
-        //~ $('#modal1').hide()
-
+        var modalContent=[];
+        var modalTimer=new Date().getTime(); // in ms
+        
         socket.emit('getAvailableCorpuses');
         
         socket.on('availableCorpuses', function(data){
             availableCorpuses = data;
-            console.log("available corpuses", data);
-            for (i=0; i<3; i++) {
-                var modalContent = generateCorpusesModal(availableCorpuses.names, availableCorpuses.selectedNames, availableCorpuses.selectedNames[i]);
-                $("#modalContent"+i.toString()).html(modalContent);
+            modalContent = [new Object(),new Object(),new Object()];
+            for (var i=0; i<3; i++) {
+                // filter out the three choices already selected
+                var nameList = availableCorpuses.names.filter(f => !availableCorpuses.selectedNames.includes(f));
+                // put back the selected choice for this input in the middle of the list to ease navigation
+                var middleIndex = Math.round(nameList.length/2);
+                nameList.splice(middleIndex, 0, availableCorpuses.selectedNames[i]);
+                //~ modalContent.push({names:nameList, selected:middleIndex});
+                modalContent[i] = {names:nameList, selected:middleIndex, isOpen:false};
+                $("#modalContent"+i.toString()).html(genCorpusModalHTML(nameList, middleIndex))
             }
         });
         
         socket.on('displayText', function(text) {
-            console.log("displaying text", text);
+            //~ console.log("displaying text", text);
             $("#mainText").text("« "+text+" »");
         });
         
         socket.on('updateUI', function(data) {
-            console.log("updated UI",data);
+            //~ console.log("updated UI",data);
             gauge1.setValueAnimated(Math.round(data[0].value*100));
             $("#gauge1-name").text(data[0].name);
             gauge2.setValueAnimated(Math.round(data[1].value*100));
@@ -39,25 +45,65 @@
             $("#gauge3-name").text(data[2].name);
         });
         
-        socket.on('showModal', function(action){
-            console.log("showModal", action);
-            $("#modal2").modal() 
+        socket.on('navigateCorpus', function(action){
+            modalTimer=new Date().getTime() // resets timer
+            console.log("navigateCorpus", action);
+            var modalIndex;
+            if (action.includes("A")) modalIndex = 0;
+            if (action.includes("B")) modalIndex = 1;
+            if (action.includes("C")) modalIndex = 2;
+            if (modalContent[modalIndex].isOpen) navigateCorpusModal(action, modalIndex);
+            else {
+                for (var i=0; i<3; i++) { // make sure other modals are closed
+                    $("#modal" +i.toString()).modal("hide");
+                    modalContent[i].isOpen = false;
+                }
+                $("#modal" +modalIndex.toString()).modal(); // TODO : regen modal to ensure selected value is in the middle
+                modalContent[modalIndex].isOpen = true;
+            }
         });
         
-        function generateCorpusesModal(namesList, forbiddenNames, selectedName) {
-            var htmlOutput='<ul class="nav nav-pills nav-stacked">';
-            const halfListIndex = namesList.length/2;
+        function genCorpusModalHTML(namesList, selectedIndex) {
+            var htmlOutput="";
             for (i=0; i<namesList.length; i++) {
-                if (i==halfListIndex) htmlOutput+='<li class="active"><a href="#">'+selectedName+'</a></li>';
-                else {
-                    if (!forbiddenNames.includes(namesList[i])) {
-                        htmlOutput+='<li><a href="#">'+namesList[i]+'</a></li>';
+                if (i==selectedIndex) htmlOutput+='<a class="nav-link active" href="#">'+namesList[selectedIndex]+'</a>';
+                else htmlOutput+='<a class="nav-link" href="#">'+namesList[i]+'</a>';
+            }
+            return(htmlOutput);
+        }
+        
+        function navigateCorpusModal(action, modalIndex){
+            console.log("navigateCorpusModal",action, modalIndex, modalContent);
+            var indexSelected = modalContent[modalIndex].selected;
+            const namesListLength = modalContent[modalIndex].names.length;
+            // calc the index of the new item selected in the list, with round-robbin
+            if (action.includes("next")){
+                if (indexSelected > 0) indexSelected -= 1;
+                else indexSelected = namesListLength -1;
+            }
+            if (action.includes("prev")) {
+                if (indexSelected < namesListLength - 1) indexSelected += 1;
+                else indexSelected = 0;
+            }
+            modalContent[modalIndex].selected = indexSelected;
+            $("#modalContent"+modalIndex.toString()).html(genCorpusModalHTML(modalContent[modalIndex].names, indexSelected));            
+        }
+        
+        window.setInterval(function(){modalWatchdog();}, 500);
+        
+        function modalWatchdog() {
+            var currentTime = new Date().getTime();
+            if (currentTime - modalTimer > 2000) {
+                for (var i=0; i<3; i++) {
+                    if (modalContent[i].isOpen) {
+                        $("#modal" +i.toString()).modal('hide'); 
+                        modalContent[i].isOpen = false;
+                        const newCorpusName = modalContent[i].names[modalContent[i].selected];
+                        console.log("changed corpus to "+newCorpusName);
+                        socket.emit("corpusChanged",{index:i, name:newCorpusName});
                     }
                 }
             }
-            htmlOutput+='</ul>';
-            console.log("modal",htmlOutput);
-            return(htmlOutput);
         }
         
         function resizeFont() {
@@ -118,31 +164,45 @@
         </div>
     </div> 
     
-    <div class="modal fade" id="modal2" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body"><div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-  <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-  <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
-  <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
-  <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
-</div></div>
+</div>
+
+<div class="modal fade" id="modal0" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" style="background:#222;">
+                <div class="nav flex-column nav-pills pill-1">
+                    <div id="modalContent0"></div>
+                </div>
             </div>
         </div>
     </div>
-    
 </div>
-
+            
 <div class="modal fade" id="modal1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body" id="modalContent1"></div>
+            <div class="modal-body" style="background:#222;">
+                <div class="nav flex-column nav-pills pill-2">
+                    <div id="modalContent1"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
             
+
+<div class="modal fade" id="modal2" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" style="background:#222;">
+                <div class="nav flex-column nav-pills pill-3">
+                    <div id="modalContent2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             
-<div id='modal3'></div>
 </body>
 <style>
     
@@ -205,5 +265,6 @@
   .gauge-container.three > .gauge > .value-text {
     fill: #FFFFFF;
   }
+  
 </style>
 </html>
