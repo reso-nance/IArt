@@ -20,9 +20,9 @@ def exitCleanly():
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exitCleanly) # register this exitCleanly function to be called on sigterm
     arduinoThread = Thread(target=arduino.listen)
-    # ~ arduinoThread.start()
+    arduinoThread.start()
     markov.initialiseCorpuses()
-    Thread(target=markov.debugText).start()
+    # ~ Thread(target=markov.debugText).start()
     print("---starting web interface on %s:%i---\n" % (flaskBind, HTTPlisteningPort))
     try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C

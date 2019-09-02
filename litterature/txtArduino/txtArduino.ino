@@ -35,7 +35,7 @@ void setup() {
   }
   
   Serial.begin(115200);
-  Serial.println("connected, "+String(potCount)+" potentiometers and "+String(buttonCount)+"buttons connected");
+  Serial.println("connected, "+String(potCount)+" potentiometers and "+String(buttonCount)+" buttons connected");
 }
 
 void loop() {

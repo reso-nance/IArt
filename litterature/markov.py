@@ -25,8 +25,8 @@ if __name__ == '__main__':
     
 def generateModel():
     global markovModel, corpusMix
-    models = [c["model"] for c in corpusMix]
-    weights = [c["mix"] for c in corpusMix]
+    models = [c["model"] for c in corpusMix if c["mix"] >= 0.01] # the corpus is ignored if it's mix is below 1%
+    weights = [c["mix"] for c in corpusMix if c["mix"] >= 0.01]
     # since each corpus has a different size, bigger corpuses tends to be favoritized when mixed along smaller ones
     # to prevent this behavior, we correct each weight by multiplying it by a bias factor  which is inversely prop to the size of the corpus:
     # bias (%) = (allCorpus.len - thisCorpus.len) / allCorpus.len
@@ -34,8 +34,10 @@ def generateModel():
     totalCorpusesLength = sum([c["length"] for c in corpusMix])
     lengthBias = [(totalCorpusesLength - c["length"])/totalCorpusesLength for c in corpusMix]
     weights = [weight * bias for weight,bias in zip(weights,lengthBias)]
-    for i in range(3) : print(corpusMix[i]["name"],corpusMix[i]["mix"], lengthBias[i], weights[i] )
-    markovModel = markovify.combine(models, weights)
+    # ~ for i in range(3) : print(corpusMix[i]["name"],corpusMix[i]["mix"], lengthBias[i], weights[i] )
+    if len (models) > 1 : markovModel = markovify.combine(models, weights)
+    elif len(models) == 1 : markovModel = models[0]
+    else : print("no model has a mix >= 1%")
     return markovModel
     
     
@@ -50,12 +52,16 @@ def generateText(sentenceLength = 280):
 def changeParameter(parameter):
     global corpusMix
     for name, value in parameter.items() :
-        print("changed parameter {} to {}".format(name, value))
+        # ~ print("changed parameter {} to {}".format(name, value))
         if name == "potA" : corpusMix[0]["mix"] = value
         elif name == "potB" : corpusMix[1]["mix"] = value
         elif name == "potC" : corpusMix[2]["mix"] = value
         elif name == "start" and value is True : print(generateText())
+        elif ("prev" in name or "next" in name) and value is True : UI.showModal(name)
+        if name in ("potA", "potB", "potC"): UI.update(corpusMix)
 
+def changeModel(modelIndex, modelName, action="prev"):
+    pass
 
 def buildModel(filename):
     if not os.path.isfile(filename) :
@@ -75,7 +81,7 @@ def loadModelFromJson(path):
     return {"model":model, "length":len(data)}
 
 def initialiseCorpuses():
-    global availableCorpuses
+    global availableCorpuses, corpusMix
     availableCorpuses = []
     for path in glob.glob(corpusPath+"*.txt") :
         pathWithoutExt = os.path.splitext(path)[0]
@@ -102,8 +108,8 @@ def initialiseCorpuses():
     UI.update(corpusMix)
     generateText()
     return
-            
-def debugText(delay=2):
+
+def debugText(delay=4):
     import time, random
     while True :
         time.sleep(delay)

@@ -6,6 +6,7 @@ from flask_socketio import SocketIO, emit
 import os, logging, subprocess, eventlet
 eventlet.monkey_patch(os=False) # needed to make eventlet work asynchronously with socketIO, address eventlet pathlib bug https://github.com/eventlet/eventlet/issues/534
 
+import markov
 
 mainTitle = "IArt txt"
 lastCorpusMix = None
@@ -53,6 +54,10 @@ def sck_shutdown():
     subprocess.Popen("sleep 3; sudo shutdown now", shell=True)
     socketio.emit("redirect", "/shutdown", namespace='/notifications')
 
+@socketio.on('getAvailableCorpuses', namespace='/home')
+def sendAvailableCorpuses():
+    socketio.emit("availableCorpuses",availableCorpuses() , namespace='/home')
+
  
 # --------------- FUNCTIONS ----------------
 
@@ -66,3 +71,11 @@ def displayText(text):
     global lastDisplayedText
     lastDisplayedText = text
     socketio.emit("displayText", text, namespace='/home')
+
+def availableCorpuses():
+    names = [c["name"] for c in markov.availableCorpuses]
+    selectedNames = [c["name"] for c in markov.corpusMix]
+    return {"names":names, "selectedNames":selectedNames}
+
+def showModal(action):
+    socketio.emit("showModal", action, namespace='/home')

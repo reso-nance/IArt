@@ -23,5 +23,7 @@ def listen():
                 elif value == "OFF" : value = False
                 else : value = float(value)/1023. # 10bits to 0~1 float
                 markov.changeParameter({name:value})
-            except Exception as e : print(e)
+            except Exception as e :
+                print("received "+line)
+                print(e)
 # TODO : handle arduino disconnection SerialException
