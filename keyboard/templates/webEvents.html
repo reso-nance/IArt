@@ -1,17 +1,11 @@
 {% include 'header.min.html' %}
-            
+
 <script type="text/javascript" charset="utf-8">
-    
     $(document).ready(function() {
+		{% include '%s' % layout %}
         var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home');
         const wavPath = "static/audio/";
         const picsPath = "static/pics/";
-        var sounds = [{id:"a", HRname:" ", wav:"birds008.wav", img:"canary.png"},
-                      {id:"b", HRname:" ", wav:"birds009.wav", img:"peacock.jpg"},
-                      {id:"c", HRname:" ", wav:"Finger-Snaps.wav", img:"fingerSnaps.jpg"},
-                      //corrupted audio {id:"d", HRname:" ", wav:"bell.wav", img:"bell.jpg"},
-                      {id:"e", HRname:" ", wav:"barisax.wav", img:"barisax.jpg"},
-                      {id:"f", HRname:" ", wav:"timpani.wav", img:"bassdrum.jpg"}];
         audioObj = [];
         
         for (var i=0; i<sounds.length; i++) {
@@ -23,20 +17,49 @@
 		  obj.controls = false;
 		  obj.id = sounds[i].id
 		  audioObj.push(obj);
-		  $("#triggers").append('<button type="button" class="btn btn-default" data-index='+i+'><img src="'+picsPath+sounds[i].img+'" data-index='+i+'>'+sounds[i].HRname+'</button>');
+		  //~ addButton(i);
+		}
+		addButtons();
+		
+		function addButton(index){
+			htmlOutput = '<button type="button" class="btn btn-default" style="width:150px;height:150px;" data-index='+index+'>'
+			if (sounds[index].img) htmlOutput+= '<img src="'+picsPath+sounds[index].img+'" data-index='+index+'>'
+			else htmlOutput += "<h1>"+sounds[index].HRname+"</h1>";
+			htmlOutput += '</button>';
+			$("#triggers").append(htmlOutput);
+		}
+		
+		function addButtons(){
+			const multicol = sounds.length > 4;
+			for (var index=0; index < sounds.length; index++) {
+				htmlOutput="";
+				//~ if (multicol && index % 4 === 0) htmlOutput+='<div class="row">'
+				htmlOutput += '<button type="button" class="btn btn-default" style="width:150px;height:150px;" data-index='+index+'>'
+				if (sounds[index].img) htmlOutput+= '<img src="'+picsPath+sounds[index].img+'" data-index='+index+' style="max-width:120px;max-height:120px";>'
+				else htmlOutput += "<h1>"+sounds[index].HRname+"</h1>";
+				htmlOutput += '</button>';
+				//~ if (multicol && (index % 5 === 0 || index === sounds.length -1)) htmlOutput+='</div>';
+				$("#triggers").append(htmlOutput);
+			}
 		}
 		
 		$('#triggers').on('mousedown', 'button', function(event){
 			index =  $(event.target).attr("data-index");
 			socket.emit("keydown",sounds[index].id);
+			if (!noteDuration && !audioObj[index].ended) { // still playing
+				audioObj[index].pause();
+				audioObj[index].fastSeek(0);
+			}
 			audioObj[index].play();			
 		});
 	
 		$('#triggers').on('mouseup', 'button', function(event){
 			index =  $(event.target).attr("data-index");
 			socket.emit("keyup",sounds[index].id);
-			audioObj[index].pause();
-			audioObj[index].fastSeek(0);
+			if (noteDuration) {
+				audioObj[index].pause();
+				audioObj[index].fastSeek(0);
+			}
 		});
         
         socket.on('weightUpdate', function(data) {
@@ -57,18 +80,20 @@
 		socket.on('stop', function(name) {
 			const player = audioObj.find(e => e.id == name)
 			//~ console.log("stopping sound "+player.id);
-			player.pause();
-			player.fastSeek(0);
+			if (noteDuration) {
+				player.pause();
+				player.fastSeek(0);
+			}
 		});
 
     });
     
     </script>
     <style>
-        .padding-0{
-            padding-right:0;
-            padding-left:0;
-        }
+        .btn-default, .btn-default:hover, .btn-default:active, .btn-default:visited {
+			background-color: #222 !important;
+			border-color:  #222 !important;
+		}
     </style>
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/custom.min.css" rel="stylesheet">
@@ -88,8 +113,8 @@
                 src="static/markov/index.html" style="width: 97vw;height:78vh;position: relative;display:block;margin-top:0px;" frameborder="0" allowfullscreen>
             </iframe>
 
-                <section id="main" >
-					<div id="triggers"></div>
+                <section id="main" class="text-center">
+					<div id="triggers" class="btn-group btn-group-justified" style="max-width:60%; margin:0 auto"></div>
 				</section>
 	</div>
 </body>
