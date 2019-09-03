@@ -5,15 +5,15 @@ from flask import Flask, g, render_template, redirect, request, url_for, copy_cu
 from flask_socketio import SocketIO, emit
 import os, logging, subprocess, eventlet
 from datetime import datetime
-# ~ from threading import Thread #FIXME only used to debug
 eventlet.monkey_patch() # needed to make eventlet work asynchronously with socketIO
 
-import random #FIXME only used to debug
+import webEvents
 
 mainTitle = "IArt keyboard"
 thread = None
 maxUIupdateRate = 1.0 # in seconds
 lastUIupdate = datetime.now()
+mainPage = 'webEvents.html'
 
 if __name__ == '__main__':
     raise SystemExit("This UI file is not meant to be executed directly. It should be imported as a module.")
@@ -33,7 +33,8 @@ log.setLevel(logging.ERROR)
 def rte_homePage():
     general_Data = {'title':mainTitle}
     sendDefaultMarkovDataToUI()
-    return render_template('keyboard.html', **general_Data)
+    # ~ return render_template('keyboard.html', **general_Data)
+    return render_template(mainPage, **general_Data)
     
 @app.route('/shutdown')
 def rte_bye():
@@ -56,12 +57,17 @@ def sck_shutdown():
     subprocess.Popen("sleep 3; sudo shutdown now", shell=True)
     socketio.emit("redirect", "/shutdown", namespace='/notifications')
 
-# ~ @socketio.on('midiSlider', namespace='/home')
-# ~ def sck_midiSlider(data):
-    # ~ if not audio.isMidiRecording :
-        # ~ midi.sendCC(control=int(data["control"]), value=int(data["value"]))
- 
+@socketio.on('keydown', namespace='/home')
+def keydown(name):
+    webEvents.on_keydown(name)
+
+@socketio.on('keyup', namespace='/home')
+def keyup(name):
+    webEvents.on_keyup(name)
+    
+
 # --------------- FUNCTIONS ----------------
+
 def sendMarkovDataToUI(weights):
     global lastUIupdate, maxUIupdateRate
     lastUpdate = datetime.now() - lastUIupdate
@@ -76,7 +82,13 @@ def sendDefaultMarkovDataToUI():
     socketio.sleep(1)
     socketio.emit("weightUpdate",defaultMarkovData , namespace='/home')
 
-def genTestData(count):
+def playSound(name):
+    socketio.emit("play", name, namespace="/home")
+
+def stopSound(name):
+    socketio.emit("stop", name, namespace="/home")
+
+def genTestData(count): #FIXME debug
     import random, string
     output = []
     for i in range(count) :
@@ -89,6 +101,7 @@ def genTestData(count):
         
 
 def simulateMarkov() : #FIXME debug
+    import random
     while True :
         socketio.sleep(1)
         markovWeights = [[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),],[random.random(),random.random(),random.random(),random.random(),]]

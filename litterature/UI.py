@@ -61,7 +61,9 @@ def sendAvailableCorpuses():
 @socketio.on('corpusChanged', namespace='/home')
 def changeCorpus(data):
     index, name = data["index"], data["name"]
-    if markov.corpusMix[index]["name"] != name : markov.changeCorpus(index, name)
+    if markov.corpusMix[index]["name"] != name :
+        markov.changeCorpus(index, name)
+        sendAvailableCorpuses()
 
  
 # --------------- FUNCTIONS ----------------

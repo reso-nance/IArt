@@ -1,0 +1,96 @@
+{% include 'header.min.html' %}
+            
+<script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function() {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home');
+        const wavPath = "static/audio/";
+        const picsPath = "static/pics/";
+        var sounds = [{id:"a", HRname:" ", wav:"birds008.wav", img:"canary.png"},
+                      {id:"b", HRname:" ", wav:"birds009.wav", img:"peacock.jpg"},
+                      {id:"c", HRname:" ", wav:"Finger-Snaps.wav", img:"fingerSnaps.jpg"},
+                      //corrupted audio {id:"d", HRname:" ", wav:"bell.wav", img:"bell.jpg"},
+                      {id:"e", HRname:" ", wav:"barisax.wav", img:"barisax.jpg"},
+                      {id:"f", HRname:" ", wav:"timpani.wav", img:"bassdrum.jpg"}];
+        audioObj = [];
+        
+        for (var i=0; i<sounds.length; i++) {
+          var obj = document.createElement("audio");
+		  obj.src = wavPath+sounds[i].wav;
+		  obj.volume = 1.0;
+		  obj.autoPlay = false;
+		  obj.preLoad = true;
+		  obj.controls = false;
+		  obj.id = sounds[i].id
+		  audioObj.push(obj);
+		  $("#triggers").append('<button type="button" class="btn btn-default" data-index='+i+'><img src="'+picsPath+sounds[i].img+'" data-index='+i+'>'+sounds[i].HRname+'</button>');
+		}
+		
+		$('#triggers').on('mousedown', 'button', function(event){
+			index =  $(event.target).attr("data-index");
+			socket.emit("keydown",sounds[index].id);
+			audioObj[index].play();			
+		});
+	
+		$('#triggers').on('mouseup', 'button', function(event){
+			index =  $(event.target).attr("data-index");
+			socket.emit("keyup",sounds[index].id);
+			audioObj[index].pause();
+			audioObj[index].fastSeek(0);
+		});
+        
+        socket.on('weightUpdate', function(data) {
+           console.log("received markov weights", data);
+           var iframe = document.getElementById('markovVisualisation');
+           if (iframe == null) return;
+           var iWindow = (iframe).contentWindow;
+           document.getElementById('markovVisualisation').contentWindow.location.reload();
+           iWindow.postMessage({"weights":data.weights, "names":data.names}, 'http://localhost:8080');
+        });
+        
+        socket.on('play', function(name) {
+			const player = audioObj.find(e => e.id === name)
+			//~ console.log("playing sound "+player.id);
+			player.play();	
+		});
+		
+		socket.on('stop', function(name) {
+			const player = audioObj.find(e => e.id == name)
+			//~ console.log("stopping sound "+player.id);
+			player.pause();
+			player.fastSeek(0);
+		});
+
+    });
+    
+    </script>
+    <style>
+        .padding-0{
+            padding-right:0;
+            padding-left:0;
+        }
+    </style>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body style="background:#222;">
+    <div class="container-fluid" style="max-height:100%; max-width:100%;margin-top:0px; position:absolute; bottom:0;">
+            {% with messages = get_flashed_messages() %}
+               {% if messages %}
+                  {% for message in messages %}
+                     {{ message }}
+                  {% endfor %}
+               {% endif %}
+            {% endwith %}
+
+            <iframe id="markovVisualisation"
+                src="static/markov/index.html" style="width: 97vw;height:78vh;position: relative;display:block;margin-top:0px;" frameborder="0" allowfullscreen>
+            </iframe>
+
+                <section id="main" >
+					<div id="triggers"></div>
+				</section>
+	</div>
+</body>
+</html>

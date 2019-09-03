@@ -20,27 +20,37 @@
 #  MA 02110-1301, USA.
 #  
 #  
+mode = None
+# ~ mode = "keystrokes" # comment this line to switch to webEvents
 
 import os, signal
 from threading import Thread
-import UI, keyboard
+import UI
+if mode == "keystrokes" : import keyboard
+else : import webEvents
 
 scriptPath = os.path.abspath(os.path.dirname(__file__))
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
 flaskBind="localhost"
-keyboardThread = None
+if mode == "keystrokes" : keyboardThread = None
 
 def exitCleanly():
-    global keyboardThread
-    if keyboardThread is not None : 
-        keyboardThread.stop()
-        print("exited keyboard listener")
+    if mode == "keystrokes" : 
+        global keyboardThread
+        if keyboardThread is not None : 
+            keyboardThread.stop()
+            print("exited keyboard listener")
     raise SystemExit
     
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exitCleanly) # register this exitCleanly function to be called on sigterm
-    keyboardThread = Thread(target=keyboard.listen)
-    keyboardThread.start()
+    if mode == "keystrokes" : 
+        keyboardThread = Thread(target=keyboard.listen)
+        keyboardThread.start()
+        UI.mainPage = "keyboard.html"
+    else : 
+        Thread(target=webEvents.listen).start()
+    print("starting up webserver on %s:%i..." %(flaskBind, HTTPlisteningPort))
     try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C
     
