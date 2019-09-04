@@ -1,0 +1,123 @@
+{% include 'header.min.html' %}
+
+<script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function() {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home')        
+        socket.emit('getAvailableCorpuses');
+        
+    });
+    
+    </script>
+    
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body style="background:#222;">
+        
+<!--
+    <video autoplay muted loop id="videoBG">
+        <source src="static/rays.mp4" type="video/mp4">
+    </video>
+-->
+    
+    <div class="container text-center vertical-align">
+        {% with messages = get_flashed_messages() %}
+           {% if messages %}
+              {% for message in messages %}
+                 {{ message }}
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
+    </div>
+<!--
+    
+    <div class="row m-2" style="height:90vh; width:90vw;">
+        <div class="col-1 full-width-image" style="width:100%; height:100%">
+         <img src="video_feed"  class="img-responsive center-block" >
+         </div>
+         
+         <div class="col-11">
+         <span style="color:white">TESTKJKOGHUDKSGFIDSHGUFOIHDSJFILHDSFUILDSHFULIDSFKJDS</span>
+         </div>
+-->
+
+<!--
+
+<div class="flex-container">
+    <div class="d-flex flex-xl-column text-center fixed-bottom">
+        <div class="p-2">
+            <div class="row">
+                <div class="col-sm-9 text-center">
+                    <img src="video_feed"  class="img-responsive center-block" >
+                    <span id="gauge1-name" style="font-size:30px; color:#3CBCDE;">testekjdlshfkjshfjksgfusgfykjezgyfugefjs</span>
+                </div>
+                <div class="col-sm-3 text-center">
+                    <div id="gauge2" class="gauge-container two" style="float:none;margin:auto;"></div>
+                    <span id="gauge2-name" style="font-size:30px; color:#CB6DFC;"></span>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+</div>
+-->
+<!--
+
+<div class="column left"></div>
+<div class="column right"><p style="color:white;">dsfohdsfkdhsf dshfkjdshfkjdshfjkds fkhjdshfkds</p></div>
+-->
+
+<div class="container-fluid">
+    <div class="row h-100 w-100">
+      <div class="col-8"><img src="video_feed" style="height:100%;"></div>
+      <div class="col-4">2 of 2</div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal0" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" style="background:#222;">
+                <div class="nav flex-column nav-pills pill-1">
+                    <div id="modalContent0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            
+</body>
+<style>
+    .full-width-image {
+       width: 100vw;
+       position: relative;
+       left: 50%;  
+       margin-left: -50vw;
+    }
+
+    .full-width-image img {
+      height: 100%;
+}
+    html,body {
+      height:100%;
+      margin:0;
+    }
+    .column.right {
+      width:40vw;
+      height:100vh;
+      float:right;
+    }
+  .column.left {
+      width:60vw;
+      height:100vh;
+      background-size:contain;
+      background-image:url(video_feed);
+      background-repeat: no-repeat;
+      background-position: center; 
+      float:left;
+  }
+ 
+</style>
+</html>

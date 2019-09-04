@@ -6,6 +6,7 @@ import mchmm as mc
 import time, numpy
 import UI
 
+continuousLearning = False
 monitoredKeys = ["q","z","s","e","d","f","t","g","y","h","u","j","k","o","l","p","m"]
 keyToNote = {"0":"--","q":"do1","z":"do#1","s":"ré1","e":"mib1","d":"mi1","f":"fa","t":"fa#","g":"sol","y":"sol#","h":"la","u":"sib","j":"si","k":"do2","o":"do#2","l":"ré2","p":"mib2","m":"mi2"}
 keysCurrentlyPressed = {}
@@ -86,8 +87,11 @@ def listen() :
                 if len(observations) > 500 :
                     # ~ print(observations)
                     markovChain = mc.MarkovChain().from_data(observations)
+                    samplesToPlay = min(int(len(observations)/2), int(10000/period)) # will play longer on stronger databases, 10s max
+                    # ~ ids, playBuffer = markovChain.simulate(samplesToPlay, start=lastKeyPressed)
                     ids, playBuffer = markovChain.simulate(10000, start=lastKeyPressed)
             else : # we are continuing to play previously computed predictions
+                if not continuousLearning and len(observations) > 0 : observations = numpy.array([]) #clear database when playing
                 if playBuffer[0] == "0" : # this is a pause
                     print("PAUSE")
                     if lastKeyPlayed is not None : # we've pressed a key

@@ -20,14 +20,8 @@
 		  //~ addButton(i);
 		}
 		addButtons();
+		console.log(sounds);
 		
-		function addButton(index){
-			htmlOutput = '<button type="button" class="btn btn-default" style="width:150px;height:150px;" data-index='+index+'>'
-			if (sounds[index].img) htmlOutput+= '<img src="'+picsPath+sounds[index].img+'" data-index='+index+'>'
-			else htmlOutput += "<h1>"+sounds[index].HRname+"</h1>";
-			htmlOutput += '</button>';
-			$("#triggers").append(htmlOutput);
-		}
 		
 		function addButtons(){
 			const multicol = sounds.length > 4;
@@ -36,7 +30,7 @@
 				//~ if (multicol && index % 4 === 0) htmlOutput+='<div class="row">'
 				htmlOutput += '<button type="button" class="btn btn-default" style="width:150px;height:150px;" data-index='+index+'>'
 				if (sounds[index].img) htmlOutput+= '<img src="'+picsPath+sounds[index].img+'" data-index='+index+' style="max-width:120px;max-height:120px";>'
-				else htmlOutput += "<h1>"+sounds[index].HRname+"</h1>";
+				else htmlOutput += '<h1 data-index='+index+' style="color:white;">'+sounds[index].HRname+'</h1>';
 				htmlOutput += '</button>';
 				//~ if (multicol && (index % 5 === 0 || index === sounds.length -1)) htmlOutput+='</div>';
 				$("#triggers").append(htmlOutput);
@@ -45,6 +39,7 @@
 		
 		$('#triggers').on('mousedown', 'button', function(event){
 			index =  $(event.target).attr("data-index");
+			console.log($(event.target));
 			socket.emit("keydown",sounds[index].id);
 			if (!noteDuration && !audioObj[index].ended) { // still playing
 				audioObj[index].pause();

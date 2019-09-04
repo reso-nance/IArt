@@ -9,15 +9,21 @@ eventlet.monkey_patch() # needed to make eventlet work asynchronously with socke
 
 import webEvents
 
-mainTitle = "IArt keyboard"
+general_Data = {'title':"IArt keyboard"}
 thread = None
 maxUIupdateRate = 1.0 # in seconds
 lastUIupdate = datetime.now()
-mainPage = 'webEvents.html'
+mainPage = "webEvents.html"
+# ~ layout = "test.js"
+layout = "percussions.js"
+# ~ layout = "orchestral.js"
 
 if __name__ == '__main__':
     raise SystemExit("This UI file is not meant to be executed directly. It should be imported as a module.")
-    
+
+if mainPage == "webEvents.html" : general_Data.update({"layout":layout})
+
+
 # Initialize Flask and flask-socketIO
 app = Flask(__name__)
 app.url_map.strict_slashes = False # don't terminate each url by / ( can mess with href='/#' )
@@ -31,14 +37,11 @@ log.setLevel(logging.ERROR)
 
 @app.route('/')
 def rte_homePage():
-    general_Data = {'title':mainTitle}
     sendDefaultMarkovDataToUI()
-    # ~ return render_template('keyboard.html', **general_Data)
     return render_template(mainPage, **general_Data)
     
 @app.route('/shutdown')
 def rte_bye():
-    general_Data = {'title':mainTitle}
     return render_template('shutdown.min.html', **general_Data)    
 
 # --------------- SOCKET IO EVENTS ----------------
