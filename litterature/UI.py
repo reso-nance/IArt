@@ -35,6 +35,11 @@ def rte_homePage():
 def rte_bye():
     general_Data = {'title':mainTitle}
     return render_template('shutdown.min.html', **general_Data)    
+    
+@app.route('/onlineTracker<ID>.jpg')
+def rte_trk(ID):
+    filePath = os.path.abspath(os.path.dirname(__file__)) + "/static/trk.jpg"
+    return send_file(filePath, mimetype='image/jpg')
 
 # --------------- SOCKET IO EVENTS ----------------
 

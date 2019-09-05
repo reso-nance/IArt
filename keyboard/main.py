@@ -21,7 +21,7 @@
 #  
 #  
 mode = None
-# ~ mode = "keystrokes" # comment this line to switch to webEvents
+mode = "keystrokes" # comment this line to switch to webEvents
 
 import os, signal
 from threading import Thread
