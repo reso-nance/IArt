@@ -5,28 +5,28 @@
     <meta charset="utf-8">
     <meta name="description" content="web interface for the IArt project">
     <meta name="author" content="laurent@reso-nance.org">
-    <link rel="icon" href="">
-    <title>IArt txt - loading</title>
+    <link rel="icon" href="../static/favicon.png">
+    <title>chargement</title>
     <!-- Bootstrap core CSS -->
     <script src="../static/js/jquery-3.3.1.min.js"></script>
     <script src="../static/js/popper.min.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
     
-<script type="text/javascript" charset="utf-8">
-    
-    $(document).ready(function() {
-          
-        function checkServerStatus(){
-            var img = document.body.appendChild(document.createElement("img"));
-            const randomID = Math.floor(Math.random() * 9999999999999); // random url to block the browser from caching the tracker
-            img.onload = function()  {window.location.assign("http://localhost:8080");};
-            img.onerror = function() {console.log("offline");};
-            img.src = "http://localhost:8080/onlineTracker"+randomID.toString()+".jpg";
-        }
+    <script type="text/javascript" charset="utf-8">
         
-        window.setInterval(function(){checkServerStatus();}, 2000);       
-         
-    });
+        $(document).ready(function() {
+              
+            function checkServerStatus(){
+                var img = document.createElement("img");
+                const randomID = Math.floor(Math.random() * 9999999999999); // random url to block the browser from caching the tracker
+                img.onload = function()  {window.location.assign("http://localhost:8080");};
+                img.onerror = function() {console.log("offline");};
+                img.src = "http://localhost:8080/onlineTracker"+randomID.toString()+".jpg";
+            }
+            
+            window.setInterval(function(){checkServerStatus();}, 2000);       
+             
+        });
     
     </script>
     
@@ -52,14 +52,11 @@
           <p class="lead">Le serveur est en cours de lancement, cette page s'actualisera d'elle même une fois le serveur en ligne.</p>
         </div>
     </div>      
-</body>
 
 <style>
 html, body {
     height: 100%;
 }
-
-</style>
 /* Circle Animation */
 
 #circularG{
@@ -221,4 +218,6 @@ html, body {
         -moz-transform:scale(.3);
     }
 }
+</style>
+</body>
 </html>

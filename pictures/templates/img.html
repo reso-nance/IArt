@@ -5,7 +5,7 @@
     $(document).ready(function() {
         var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home')  
         var layerSlider = document.getElementById("layer");
-		output.innerHTML = slider.value; // Display the default slider value
+		$('#layer-value').text(layer.value); // Display the default slider value
 
 		// Update the current slider value (each time you drag the slider handle)
 		//~ slider.oninput = function() {
@@ -41,10 +41,11 @@
 
 <div class="container-fluid h-100">
     <div class="row h-100 w-100 align-items-center">
-      <div class="col-6"><img src="video_feed" style="height:100%;"></div>
+      <div class="col-6"><img src="video_feed" onerror="this.onerror=null; this.src='static/nosignal.png'" style="height:100%;"></div>
       <div class="col-6 align-items-center">
 		<div class="slidecontainer">
 		  <input type="range" min="1" max="100" value="12" class="slider" id="layer">
+		  <div id="layer-value" class="text-center" style="color:white;"></div>
 		</div>
 		<div class="slidecontainer">
 		  <input type="range" min="1" max="100" value="78" class="slider" id="scale">
