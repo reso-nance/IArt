@@ -21,8 +21,8 @@ app.url_map.strict_slashes = False # don't terminate each url by / ( can mess wi
 socketio = SocketIO(app, async_mode="eventlet")
 # ~ socketio = SocketIO(app, async_mode="threading", ping_timeout=36000)# set the timeout to ten hours, defaut is 60s and frequently disconnects
 # disable flask debug (except errors)
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# ~ log = logging.getLogger('werkzeug')
+# ~ log.setLevel(logging.ERROR)
 
 # --------------- FLASK ROUTES ----------------
 

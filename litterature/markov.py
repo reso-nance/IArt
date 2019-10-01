@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #  
+import eventlet
+eventlet.monkey_patch()
 import markovify, os, sys, re, spacy, glob, json
 import UI
 
@@ -40,7 +42,14 @@ def generateModel():
     else : print("no model has a mix >= 1%")
     return markovModel
     
-    
+# this function is a wrapper to generateText allowing to get rid of unwanted parameters passed by liblo
+def OSCgenerateText(OSCaddress, OSCargs):
+    if len(OSCargs) == 0 : generateText()
+    elif len(OSCargs) == 1 : generateText(OSCargs[0])
+
+def OSCsetCorpuses (OSCaddress, OSCargs) : 
+    pass # TODO
+
 def generateText(sentenceLength = 280):
     for i in range(10):
         text = generateModel().make_short_sentence(sentenceLength)

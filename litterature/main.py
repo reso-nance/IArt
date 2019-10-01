@@ -1,29 +1,46 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #  
+import eventlet
+eventlet.monkey_patch()
+from eventlet.green import threading
 
 import os, signal
-from threading import Thread
-import UI, arduino, markov
+import UI, markov
 
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
 flaskBind="localhost"
 arduinoThread = None
+OSCenabled = True
+
+if OSCenabled : import OSCserver
+    
+else : 
+    # ~ from threading import Thread
+    import arduino
 
 def exitCleanly():
     global arduinoThread
-    if arduinoThread is not None : 
+    if not OSCenabled and arduinoThread is not None : 
         arduinoThread.stop()
         print("exited arduino listener")
+    # ~ if OSCenabled and OSCserverThread is not None : 
+    if OSCenabled : 
+        OSCserver.server.stop()
+        print("exited OSC server")
     raise SystemExit
     
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exitCleanly) # register this exitCleanly function to be called on sigterm
-    arduinoThread = Thread(target=arduino.listen)
-    arduinoThread.start()
     markov.initialiseCorpuses()
-    # ~ Thread(target=markov.debugText).start()
+    if OSCenabled : 
+        print("--- starting OSC server ---")
+        OSCserver.startListening()
+    else :
+        arduinoThread = threading.Thread(target=arduino.listen)
+        arduinoThread.start()
+        
     print("---starting web interface on %s:%i---\n" % (flaskBind, HTTPlisteningPort))
-    try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
+    try:
+        UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C
-    

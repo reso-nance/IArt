@@ -1,17 +1,19 @@
 static const unsigned int maxRate = 20; // in millis
 
-struct potentiometer {
+struct analog {
   String name;
   unsigned int pin;
+  unsigned int calibMin;
+  unsigned int calibMax;
   unsigned int lastValue;
   unsigned int currentValue;
   unsigned int deadBand;
 };
-potentiometer allPots[] = {{"potA", 1, 0, 0, 5}, {"potB", 2, 0, 0, 5}, {"potC", 3, 0, 0, 5}};
-unsigned int potCount = sizeof(allPots)/sizeof(potentiometer);
+analog analogs[] = { {"potA", 1, 0, 1023, 0, 0, 5}, {"potB", 2, 0, 1023, 0, 0, 5}, {"potC", 3, 0, 1023, 0, 0, 5} };
+unsigned int analogsCount = sizeof(analogs)/sizeof(analog);
 
 
-struct button {
+struct digital {
   String name;
   unsigned int pin;
   bool lastState;
@@ -19,51 +21,52 @@ struct button {
   long lastTriggered;
 };
 
-button allButtons[] = {{"start", 2, true, 20, 0}, {"prevA", 3, true, 20, 0}, {"nextA", 4, true, 20, 0}, {"prevB", 5, true, 20, 0},
-                        {"nextB", 6, true, 20, 0}, {"prevC", 7, true, 20, 0}, {"nextC", 8, true, 20, 0}};
-unsigned int buttonCount = sizeof(allButtons)/sizeof(button);
+digital digitals[] = { {"start", 2, true, 20, 0}, {"prevA", 3, true, 20, 0}, {"nextA", 4, true, 20, 0}, {"prevB", 5, true, 20, 0},
+                       {"nextB", 6, true, 20, 0}, {"prevC", 7, true, 20, 0}, {"nextC", 8, true, 20, 0} };
+unsigned int digitalsCount = sizeof(digitals)/sizeof(digital);
 
 void setup() {
-  // setting up the buttons
-  for (unsigned int i=0; i<buttonCount; i++){
-    pinMode(allButtons[i].pin, INPUT_PULLUP);
-    allButtons[i].lastState = digitalRead(allButtons[i].pin);
+  // setting up the digital inputs
+  for (unsigned int i=0; i<digitalsCount; i++){
+    pinMode(digitals[i].pin, INPUT_PULLUP);
+    digitals[i].lastState = digitalRead(digitals[i].pin);
   }
-  // setting up the potentiometers
-  for (unsigned int i=0; i<potCount; i++) {
-    allPots[i].currentValue = analogRead(allPots[i].pin);
+  // setting up the analog inputs
+  for (unsigned int i=0; i<analogsCount; i++) {
+    analogs[i].currentValue = analogRead(analogs[i].pin);
   }
   
   Serial.begin(115200);
-  Serial.println("connected, "+String(potCount)+" potentiometers and "+String(buttonCount)+" buttons connected");
+  Serial.println("connected, "+String(analogsCount)+" analog inputs and "+String(digitalsCount)+" digital inputs configured");
 }
 
 void loop() {
 
-//  Reading potentiometers
-  for (unsigned int i=0; i<potCount; i++) {
-    allPots[i].currentValue = analogRead(allPots[i].pin);
-    if (allPots[i].lastValue < allPots[i].currentValue - allPots[i].deadBand || allPots[i].lastValue > allPots[i].currentValue + allPots[i].deadBand) {
-      Serial.println(allPots[i].name + ":"+ String(allPots[i].currentValue));
+//  Reading analog inputs
+  for (unsigned int i=0; i<analogsCount; i++) {
+    analogs[i].currentValue = analogRead(analogs[i].pin);
+    analogs[i].currentValue = map(analogs[i].currentValue, analogs[i].calibMin,  analogs[i].calibMax, 0, 1023);
+    if (analogs[i].lastValue < analogs[i].currentValue - analogs[i].deadBand || analogs[i].lastValue > analogs[i].currentValue + analogs[i].deadBand) {
+      Serial.println(analogs[i].name + ":"+ String(analogs[i].currentValue));
       delay(maxRate);
     }
-    allPots[i].lastValue = allPots[i].currentValue;
+    analogs[i].lastValue = analogs[i].currentValue;
   }
 
-//  Reading buttons
-  for (unsigned int i=0; i<buttonCount; i++) {
-    bool buttonState = digitalRead(allButtons[i].pin);
-    // button has been pulled LOW
-    if (buttonState == LOW && allButtons[i].lastState == HIGH && millis() - allButtons[i].lastTriggered > allButtons[i].debounce) {
-      Serial.println(allButtons[i].name+":ON");
-      allButtons[i].lastTriggered = millis();
+//  Reading digital inputs
+  for (unsigned int i=0; i<digitalsCount; i++) {
+    bool currentState = digitalRead(digitals[i].pin);
+    // input has been pulled LOW
+    if (currentState == LOW && digitals[i].lastState == HIGH && millis() - digitals[i].lastTriggered > digitals[i].debounce) {
+      Serial.println(digitals[i].name+":ON");
+      digitals[i].lastTriggered = millis();
     }
-    // button has been pulled HIGH
-    if (buttonState == HIGH && allButtons[i].lastState == LOW && millis() - allButtons[i].lastTriggered > allButtons[i].debounce) {
-      Serial.println(allButtons[i].name+":OFF");
-      allButtons[i].lastTriggered = millis();
+    // input has been pulled HIGH
+    if (currentState == HIGH && digitals[i].lastState == LOW && millis() - digitals[i].lastTriggered > digitals[i].debounce) {
+      Serial.println(digitals[i].name+":OFF");
+      digitals[i].lastTriggered = millis();
     }
-    allButtons[i].lastState = buttonState;
+    digitals[i].lastState = currentState;
   }
   
   delay(5);

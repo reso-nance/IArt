@@ -5,7 +5,7 @@
 import serial
 import markov
 
-arduinoPort='/dev/ttyUSB1' # udevadm info --query=all --name=/dev/ttyUSB0
+arduinoPort='/dev/ttyUSB0' # udevadm info --query=all --name=/dev/ttyUSB0
 baudrate=115200
 
 if __name__ == '__main__':
