@@ -19,9 +19,9 @@
             function checkServerStatus(){
                 var img = document.createElement("img");
                 const randomID = Math.floor(Math.random() * 9999999999999); // random url to block the browser from caching the tracker
-                img.onload = function()  {window.location.assign("http://localhost:8080");};
+                img.onload = function()  {window.location.assign("http://10.0.0.1:8080");};
                 img.onerror = function() {console.log("offline");};
-                img.src = "http://localhost:8080/onlineTracker"+randomID.toString()+".jpg";
+                img.src = "http://10.0.0.1:8080/onlineTracker"+randomID.toString()+".jpg";
             }
             
             window.setInterval(function(){checkServerStatus();}, 2000);       

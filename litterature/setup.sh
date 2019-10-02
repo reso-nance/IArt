@@ -60,6 +60,13 @@ echo "
 sudo echo"
 xserver-command=X -s 0 dpms
 ">>/etc/lightdm/lightdm.conf
+
+echo "
+----------- setting up the access point ------------
+"
+chmod +x STAtoAP
+sudo ./STAtoAP
+
 echo "
 
 ----------------------------------------------------

@@ -6,11 +6,14 @@ import os, signal
 import UI, markov
 
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
-flaskBind="localhost"
+# ~ flaskBind="localhost"
+flaskBind="10.0.0.1"
 arduinoThread = None
-OSCenabled = False # set to False to switch to arduino mode
+smashwords = True # set to False to switch to arduino mode
 
-if OSCenabled : import OSCserver
+if smashwords :
+    import OSCserver
+    markov.corpusPath = markov.scriptPath + "/smashwords/"
     
 else : 
     import threading
@@ -18,10 +21,10 @@ else :
 
 def exitCleanly():
     global arduinoThread
-    if not OSCenabled and arduinoThread is not None : 
+    if not smashwords and arduinoThread is not None : 
         arduinoThread.stop()
         print("exited arduino listener")
-    if OSCenabled : 
+    if smashwords : 
         OSCserver.server.stop()
         print("exited OSC server")
     raise SystemExit
@@ -29,7 +32,7 @@ def exitCleanly():
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exitCleanly) # register this exitCleanly function to be called on sigterm
     markov.initialiseCorpuses()
-    if OSCenabled : 
+    if smashwords : 
         print("--- starting OSC server ---")
         OSCserver.startListening()
     else :
