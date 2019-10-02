@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #  
-import eventlet
-eventlet.monkey_patch()
-from eventlet.green import threading
 
 import os, signal
 import UI, markov
@@ -11,12 +8,12 @@ import UI, markov
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
 flaskBind="localhost"
 arduinoThread = None
-OSCenabled = True
+OSCenabled = False # set to False to switch to arduino mode
 
 if OSCenabled : import OSCserver
     
 else : 
-    # ~ from threading import Thread
+    import threading
     import arduino
 
 def exitCleanly():
@@ -24,7 +21,6 @@ def exitCleanly():
     if not OSCenabled and arduinoThread is not None : 
         arduinoThread.stop()
         print("exited arduino listener")
-    # ~ if OSCenabled and OSCserverThread is not None : 
     if OSCenabled : 
         OSCserver.server.stop()
         print("exited OSC server")

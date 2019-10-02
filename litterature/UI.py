@@ -3,8 +3,8 @@
 #  
 from flask import Flask, g, render_template, redirect, request, url_for, copy_current_request_context, send_file, flash, Markup
 from flask_socketio import SocketIO, emit
-import os, logging, subprocess, eventlet
-eventlet.monkey_patch(os=False) # needed to make eventlet work asynchronously with socketIO, address eventlet pathlib bug https://github.com/eventlet/eventlet/issues/534
+import os, logging, subprocess
+# ~ eventlet.monkey_patch(os=False) # needed to make eventlet work asynchronously with socketIO, address eventlet pathlib bug https://github.com/eventlet/eventlet/issues/534
 
 import markov
 
@@ -18,11 +18,12 @@ if __name__ == '__main__':
 # Initialize Flask and flask-socketIO
 app = Flask(__name__)
 app.url_map.strict_slashes = False # don't terminate each url by / ( can mess with href='/#' )
-socketio = SocketIO(app, async_mode="eventlet")
-# ~ socketio = SocketIO(app, async_mode="threading", ping_timeout=36000)# set the timeout to ten hours, defaut is 60s and frequently disconnects
+# ~ socketio = SocketIO(app, async_mode="eventlet")
+# ~ socketio = SocketIO(app, async_mode="threading", logger=True, engineio_logger=True, ping_timeout=36000)
+socketio = SocketIO(app, async_mode="threading", ping_timeout=36000)# set the timeout to ten hours, defaut is 60s and frequently disconnects
 # disable flask debug (except errors)
-# ~ log = logging.getLogger('werkzeug')
-# ~ log.setLevel(logging.ERROR)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 # --------------- FLASK ROUTES ----------------
 
@@ -48,6 +49,7 @@ def onConnect():
     print("client connected, session id : "+request.sid)
     if lastCorpusMix is not None : update(lastCorpusMix)
     if lastDisplayedText is not None : displayText(lastDisplayedText)
+    else : displayText("Appuyez pour commencer")
 
 @socketio.on('disconnect', namespace='/home')
 def onDisconnect():

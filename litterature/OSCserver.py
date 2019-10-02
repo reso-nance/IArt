@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #  
-import eventlet
-eventlet.monkey_patch() 
+# ~ import eventlet
+# ~ eventlet.monkey_patch() 
 import liblo
 # ~ eventlet.import_patched("liblo")
 from datetime import datetime
-import markov, UI
+import markov
 
 listenPort = 9002
 server = None
@@ -40,6 +40,7 @@ def averageAcc(OSCaddress, OSCparams):
             corpusMix = [int(c*100) for c in corpusMix]
             print("swing detected : %.02f -> low %i, mid %i, high %i" % (jerk*100,corpusMix[0], corpusMix[1], corpusMix[2] ))
             # ~ print("X:",OSCparams[0], " Y:", OSCparams[1], "Z:", OSCparams[2],"\n")
+            # ~ markov.changeParameter({"start":True})
             markov.generateText()
             jerkData = None
             lastJerk = datetime.now()

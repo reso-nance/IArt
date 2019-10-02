@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #  
-import eventlet
-eventlet.monkey_patch()
-import markovify, os, sys, re, spacy, glob, json
+
+import markovify, os, sys, re, spacy, glob, json, subprocess
 import UI
 
 scriptPath = os.path.abspath(os.path.dirname(__file__))
@@ -11,6 +10,7 @@ corpusPath = scriptPath+"/corpus/"
 availableCorpuses = None
 markovModel = None
 corpusMix = []
+textToSpeech = True
 
 # overriding POSifiedText to make use of spacy
 nlp = spacy.load("fr_core_news_sm")
@@ -52,9 +52,12 @@ def OSCsetCorpuses (OSCaddress, OSCargs) :
 
 def generateText(sentenceLength = 280):
     for i in range(10):
+        UI.socketio.sleep()
         text = generateModel().make_short_sentence(sentenceLength)
         if text is not None : 
             UI.displayText(text)
+            if textToSpeech : readTextToSpeech(text)
+            print(text)
             return
     print("unable to generate text 10 times in a row")
     
@@ -65,7 +68,7 @@ def changeParameter(parameter):
         if name == "potA" : corpusMix[0]["mix"] = value
         elif name == "potB" : corpusMix[1]["mix"] = value
         elif name == "potC" : corpusMix[2]["mix"] = value
-        elif name == "start" and value is True : print(generateText())
+        elif name == "start" and value is True : generateText()
         elif ("prev" in name or "next" in name) and value is True : UI.navigateModal(name)
         if name in ("potA", "potB", "potC"): UI.update(corpusMix)
 
@@ -121,6 +124,11 @@ def initialiseCorpuses():
     # ~ print(generateText())
     UI.update(corpusMix)
     return
+
+def readTextToSpeech(text):
+    cmd = 'pico2wave --lang="fr-FR" -w tmp.wav "%s" && aplay tmp.wav >>/dev/null' % text
+    subprocess.Popen(cmd, shell=True)
+    
 
 def debugText(delay=4):
     import time, random
