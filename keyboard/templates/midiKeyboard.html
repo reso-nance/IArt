@@ -1,0 +1,78 @@
+{% include 'header.min.html' %}
+            
+<script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function() {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/home');
+        //~ audioObj = [];
+        
+        //~ for (var i=48; i<73; i++) {
+          //~ var obj = document.createElement("audio");
+		  //~ obj.src = "static/audio/piano/"+i.toString()+".wav";
+		  //~ obj.volume = 1.0;
+		  //~ obj.autoPlay = false;
+		  //~ obj.preLoad = true;
+		  //~ obj.controls = false;
+		  //~ obj.id = i.toString();
+		  //~ audioObj.push(obj);
+		//~ }
+		
+		//~ console.log(audioObj);
+		
+        socket.on('weightUpdate', function(data) {
+           console.log("received markov weights", data);
+           var iframe = document.getElementById('markovVisualisation');
+           if (iframe == null) return;
+           var iWindow = (iframe).contentWindow;
+           document.getElementById('markovVisualisation').contentWindow.location.reload();
+           iWindow.postMessage({"weights":data.weights, "names":data.names}, 'http://localhost:8080');
+        });
+        
+       socket.on('statusText', function(data) {
+		   $("#statusText").text(data); 
+		   console.log("status text : " + data);
+		});
+		
+		//~ socket.on('play', function(name) {
+			//~ const player = audioObj.find(e => e.id === name)
+			//~ console.log("playing sound "+player.id);
+			//~ player.play();	
+		//~ });
+		
+    });
+    
+    </script>
+    <style>
+        .padding-0{
+            padding-right:0;
+            padding-left:0;
+        }
+    </style>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body style="background:#222;">
+    <div class="container-fluid" style="max-height:100%; max-width:100%;margin-top:0px; position:absolute; bottom:0;">
+            {% with messages = get_flashed_messages() %}
+               {% if messages %}
+                  {% for message in messages %}
+                     {{ message }}
+                  {% endfor %}
+               {% endif %}
+            {% endwith %}
+            
+        <p id="statusText"></p>
+        
+		<iframe id="markovVisualisation"
+			src="static/markov/index.html" style="width: 97vw;height:97vh;position: relative;display:block;margin-top:0px;" frameborder="0" allowfullscreen>
+		</iframe>
+		
+    </div>
+<!--
+            </div>
+-->
+
+</body>
+
+</html>

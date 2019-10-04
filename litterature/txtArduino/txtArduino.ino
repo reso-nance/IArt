@@ -16,19 +16,22 @@ unsigned int analogsCount = sizeof(analogs)/sizeof(analog);
 struct digital {
   String name;
   unsigned int pin;
+  bool inverted;
+  bool pullup;
   bool lastState;
   unsigned int debounce;
   long lastTriggered;
 };
 
-digital digitals[] = { {"start", 2, true, 20, 0}, {"prevA", 3, true, 20, 0}, {"nextA", 4, true, 20, 0}, {"prevB", 5, true, 20, 0},
-                       {"nextB", 6, true, 20, 0}, {"prevC", 7, true, 20, 0}, {"nextC", 8, true, 20, 0} };
+digital digitals[] = { {"start", 3, false, true, true, 20, 0}, {"prevA", 4, true, false, false, 20, 0}, {"nextA", 5, true, false, false, 20, 0}, {"prevB", 6, true, false, false, 20, 0},
+                       {"nextB", 7, true, false, false, 20, 0}, {"prevC", 8, true, false, false, 20, 0}, {"nextC", 9, true, false, false, 20, 0} };
 unsigned int digitalsCount = sizeof(digitals)/sizeof(digital);
 
 void setup() {
   // setting up the digital inputs
   for (unsigned int i=0; i<digitalsCount; i++){
-    pinMode(digitals[i].pin, INPUT_PULLUP);
+    if (digitals[i].pullup) pinMode(digitals[i].pin, INPUT_PULLUP);
+    else pinMode(digitals[i].pin, INPUT);
     digitals[i].lastState = digitalRead(digitals[i].pin);
   }
   // setting up the analog inputs
@@ -58,12 +61,14 @@ void loop() {
     bool currentState = digitalRead(digitals[i].pin);
     // input has been pulled LOW
     if (currentState == LOW && digitals[i].lastState == HIGH && millis() - digitals[i].lastTriggered > digitals[i].debounce) {
-      Serial.println(digitals[i].name+":ON");
+      if (!digitals[i].inverted) Serial.println(digitals[i].name+":ON");
+      else Serial.println(digitals[i].name+":OFF");
       digitals[i].lastTriggered = millis();
     }
     // input has been pulled HIGH
     if (currentState == HIGH && digitals[i].lastState == LOW && millis() - digitals[i].lastTriggered > digitals[i].debounce) {
-      Serial.println(digitals[i].name+":OFF");
+      if (!digitals[i].inverted) Serial.println(digitals[i].name+":OFF");
+      else Serial.println(digitals[i].name+":ON");
       digitals[i].lastTriggered = millis();
     }
     digitals[i].lastState = currentState;

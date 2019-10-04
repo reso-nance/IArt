@@ -3,9 +3,10 @@
 #  
 from flask import Flask, g, render_template, redirect, request, url_for, copy_current_request_context, send_file, flash, Markup
 from flask_socketio import SocketIO, emit
-import os, logging, subprocess, eventlet
+import os, logging, subprocess
+# ~ import os, logging, subprocess, eventlet
 from datetime import datetime
-eventlet.monkey_patch() # needed to make eventlet work asynchronously with socketIO
+# ~ eventlet.monkey_patch() # needed to make eventlet work asynchronously with socketIO
 
 import webEvents
 
@@ -13,9 +14,10 @@ general_Data = {'title':"IArt keyboard"}
 thread = None
 maxUIupdateRate = 1.0 # in seconds
 lastUIupdate = datetime.now()
-mainPage = "webEvents.html"
+mainPage = None
+layout = None
 # ~ layout = "test.js"
-layout = "percussions.js"
+# ~ layout = "percussions.js"
 # ~ layout = "orchestral.js"
 
 if __name__ == '__main__':
@@ -27,8 +29,8 @@ if mainPage == "webEvents.html" : general_Data.update({"layout":layout})
 # Initialize Flask and flask-socketIO
 app = Flask(__name__)
 app.url_map.strict_slashes = False # don't terminate each url by / ( can mess with href='/#' )
-socketio = SocketIO(app, async_mode="eventlet")
-# ~ socketio = SocketIO(app, async_mode="threading", ping_timeout=36000)# set the timeout to ten hours, defaut is 60s and frequently disconnects
+# ~ socketio = SocketIO(app, async_mode="eventlet")
+socketio = SocketIO(app, async_mode="threading", ping_timeout=36000)# set the timeout to ten hours, defaut is 60s and frequently disconnects
 # disable flask debug (except errors)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -95,6 +97,9 @@ def playSound(name):
 
 def stopSound(name):
     socketio.emit("stop", name, namespace="/home")
+
+def statusText(text) :
+	socketio.emit("statusText", text, namespace="/home")
 
 def genTestData(count): #FIXME debug
     import random, string

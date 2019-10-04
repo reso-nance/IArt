@@ -20,26 +20,45 @@
 #  MA 02110-1301, USA.
 #  
 #  
-mode = None
-mode = "keystrokes" # comment this line to switch to webEvents
 
 import os, signal
 from threading import Thread
 import UI
-if mode == "keystrokes" : import keyboard
-else : import webEvents
 
 scriptPath = os.path.abspath(os.path.dirname(__file__))
 HTTPlisteningPort=8080 # ports numbers below 1000 are typically forbidden for non-root users
+# ~ flaskBind="10.0.120.78"
 flaskBind="localhost"
-if mode == "keystrokes" : keyboardThread = None
+mode = "midiKeyboard"
+# ~ mode = "keystrokes" 
+# ~ mode = "webEvents"
 
+if mode == "keystrokes" : 
+    import keyboard
+    keyboardThread = None
+    UI.mainpage="keyboard.html"
+    
+elif mode == "webEvents" :
+    import webEvents
+    UI.mainPage = "webEvents.html"
+    UI.layout = "percussions.js"
+    UI.general_Data.update({"layout":layout})
+    
+elif mode == "midiKeyboard" :
+    import midiKeyboard
+    midiKeyboardThread = None
+    UI.mainPage = "midiKeyboard.html"
+    
 def exitCleanly():
     if mode == "keystrokes" : 
         global keyboardThread
         if keyboardThread is not None : 
             keyboardThread.stop()
             print("exited keyboard listener")
+    if mode == "midiKeyboard" : 
+        midiKeyboard.stopListening = True
+        print("exiting MIDI listener")
+        midiKeyboard.midiListenerThread.join()
     raise SystemExit
     
 if __name__ == '__main__':
@@ -48,8 +67,12 @@ if __name__ == '__main__':
         keyboardThread = Thread(target=keyboard.listen)
         keyboardThread.start()
         UI.mainPage = "keyboard.html"
-    else : 
+    elif mode == "webEvents" : 
         Thread(target=webEvents.listen).start()
+    elif mode == "midiKeyboard" :
+        midiKeyboardThread = Thread(target=midiKeyboard.listen)
+        midiKeyboardThread.start()
+        print("starting midiKeyboard thread")
     print("starting up webserver on %s:%i..." %(flaskBind, HTTPlisteningPort))
     try: UI.socketio.run(UI.app, host=flaskBind, port=HTTPlisteningPort)  # Start the asynchronous web server (flask-socketIO)
     except KeyboardInterrupt: exitCleanly() # quit on ^C
