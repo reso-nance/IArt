@@ -1,0 +1,380 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>IA-BDP</title>
+
+		<meta name="description" content="support d'atelier IA">
+		<meta name="author" content="laurent@reso-nance.org">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+                <style>
+                        .reveal section img { background:none; border:none; box-shadow:none; }
+                        .reveal .caption {
+                            position: absolute; 
+                            bottom: 10px;
+                            left: 50%;
+                        }
+                        .col-container{
+							display: flex;
+						}
+						.col{
+							flex: 1;
+						}
+                </style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+								
+				<section data-background-video="media/tmpIntro720p.mp4" data-background-video-loop="loop" data-autoplay>
+					<h2>Intelligence Artificielle</h2>
+					<p>(travail en cours)</p>
+				</section>
+					
+				<section>
+                   <p><b>ordinateur</b></p>
+                   <p class="fragment fade-up">
+					   <img width="180" data-src="./media/washing.png">
+					   <img width="180" data-src="./media/phone.png">
+					   <img width="180" data-src="./media/car.png">
+					   <img width="180" data-src="./media/arm.png">
+					   <img width="180" data-src="./media/pickplace.png">
+					</p>
+					<p class="fragment fade-up">
+						<small style="position:absolute; top:0px; left:center;">processeur</small>
+						 <img data-src="./media/proc.jpg">
+					</p>
+				</section>
+				
+				<section>
+					
+                   <section>
+					   <p><b>processeur</b></p>
+					   <p> <img width=60% data-src="./media/proc2.jpg"><p class="fragment fade-up">contient et execute le <b>code</b></p></p>
+					</section>
+					
+                   <section>
+					   <p><b>code</b></p>
+					   <p><img width=60% data-src="./media/code.png"></p>
+					   <p class="fragment fade-up"><b>tout</b> ce que sait faire la machine est dans son <b>code</b></p>
+				   </section>
+					
+                   <section>
+					   <p>exemple</p>
+					   <p>à définir selon temps disponible : dessin à deux, dessin sur instructions, algorithme du petit déjeuner...</p>
+				   </section>
+				   
+<!--
+				   <section data-background-video="media/plotter.webm" data-background-video-loop="loop" data-autoplay></section>
+-->
+				
+				</section>
+				
+				<section>
+					<section data-background-video="media/démoRobots.webm" data-background-video-loop="loop" data-autoplay></section>
+				</section>
+					
+					
+				
+				 <section>
+				   <p style="margin-top:-50px;"><b><span style="color:#86ff7f;">homme</span> | <span style="color:#3c8af9;">machine</span></b></p>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="1">lire</div>
+					   <div class="col fragment fade-up" data-fragment-index="2">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;"> : +84%
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="2">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;"> : -0,0001%
+					   </div>
+				   </div>
+				
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="3">écrire</div>
+					   <div class="col fragment fade-up" data-fragment-index="4">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;"> : 129 864 880 livres
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="4">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;"> : 1 livre
+					   </div>
+				   </div>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="5">marcher</div>
+					   <div class="col fragment fade-up" data-fragment-index="6">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;"> : +94%
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="6">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;"> : -0,0001%
+					   </div>
+				   </div>
+				
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="7">calculer</div>
+					   <div class="col fragment fade-up" data-fragment-index="8">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;"> : 2 opérations/seconde
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="8">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;"> : 200 000 000 000 000 000 opérations/seconde
+					   </div>
+				   </div>
+				</section>
+				
+				
+                <section>
+				   <p style="margin-top:-50px;"><b><span style="color:#86ff7f;">homme</span> | <span style="color:#3c8af9;">machine</span></b></p>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="1">rapidité</div>
+					   <div class="col fragment fade-up" data-fragment-index="2">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="2">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="3">précision</div>
+					   <div class="col fragment fade-up" data-fragment-index="4">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="4">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>		   
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="5">adaptabilité</div>
+					   <div class="col fragment fade-up" data-fragment-index="6">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="6">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>		   
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col fragment fade-up" data-fragment-index="7">imagination</div>
+					   <div class="col fragment fade-up" data-fragment-index="8">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+					   </div>
+					   <div class="col"></div>
+					   <div class="col  fragment fade-up" data-fragment-index="8">
+						   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+			   </section>
+                   
+                   
+				<section>
+                   <p><b>tous</b> les humains ?</p>
+                   <p class="fragment fade-up"> <img data-src="./media/bébé.png"></p>
+			       <p class="fragment fade-up"><b><font size="+5" color="red">apprentissage</font></b></p>
+				</section>
+				
+				
+ <section>
+
+				   <p style="margin-top:-50px;"><b><span style="color:#86ff7f;">intelligence</span> <span style="color:#3c8af9;">artificielle</span></b></br>ordinateur + apprentissage</p>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col">rapidité</div>
+					   <div class="col">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col">précision</div>
+					   <div class="col">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col">adaptabilité</div>
+					   <div class="col">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+				   <div class="col-container" style="margin-top:50px;">
+					   <div class="col">imagination</div>
+					   <div class="col">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+						   <img width=50 data-src="./media/IA.png" style="margin: -10px 0px;">
+					   </div>
+				   </div>
+				   
+			   </section>
+                   
+               
+               <section>
+				    <section data-transition="none"> <img data-src="./media/face1.png"> </section>
+				    <section data-transition="none"> <img data-src="./media/face2.png"> </section>
+				    <section data-transition="none"> <img data-src="./media/face3.png"> </section>
+				    <section data-transition="none"> <img data-src="./media/face4.png"> </section>
+				    <section data-transition="none"> <img data-src="./media/face.png"> </section>
+				    <section> <img data-src="./media/faces.jpg"> </section>
+				    <section> <img data-src="./media/faces2.png"> </section>
+				    <section> <img data-src="./media/reCaptcha.png"> </section>
+               
+               </section>
+                   			
+				<section>
+					<h4>outil</h4>
+					<p class="fragment fade-up">intuitif</p>
+					<p class="fragment fade-up">interactif</p>
+					<p class="fragment fade-up">en développement</p>
+					<aside class="notes"> Intuitif SANS CODE<br>Interactif : dev d'objets connectés interactifs réagissant capteurs</br> en dev : bugs, prise en compte retours </aside>
+				</section>
+				<section>
+					<section>
+						<p><img data-src="./media/ecosys.png"></p>
+					</section>
+                                        <section>
+                                                <p><img data-src="./media/modules.jpg"></p>
+                                                <aside class="notes"> écosystème modules electroniques + interface web </aside>
+                                        </section>
+                                        <section>
+                                                <img data-src="./media/appareils.png">
+                                                <aside class="notes"> interface web multiplateforme, pas de logiciel à installer...  </aside>
+                                        </section>
+				</section>
+                                
+				<section>
+                                        <section>
+                                                <p>ateliers par niveau</p>
+                                                <aside class="notes"> outil adaptable diff durées, âges, thématiques niveau d'implication public </aside>
+                                        </section>
+                                        <section>
+                                                <p>découverte</p>
+                                                <img data-src="./media/decouverte.jpg">
+                                                <aside class="notes">adapté ateliers type stand, public variable peu engagé</aside>
+                                        </section>
+                                        <section>
+                                                <p>thématique </p>
+                                                <img data-src="./media/intermediaires.jpg">
+                                                <aside class="notes"> soutien à d'autres pjets : ex escape game interactif, présentation synthèse modulaire </aside>
+                                        </section>
+                                        <section>
+                                                <p>développement de projets</p>
+                                                <img data-src="./media/adultes.jpg">
+                                                <aside class="notes"> participants concoivent et réalisent leur propre projet </aside>
+                                        </section>
+                </section>
+                
+                <section>
+										   <p>pratique</p>
+				</section>
+				
+                <section>
+									   <section> 
+										   <p>état des possibles</p>
+										   <p><small>juillet 2019</small></p>
+									   </section>
+                                       <section>
+										   <p><img data-src="./media/SLICIO.png"></p>
+									   </section>
+				</section>
+				<section>
+					<p>Questions ?</p>
+						<p><img data-src="./media/fin.jpg"></p>
+				</section>
+                
+                
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				controls: true,
+				slideNumber: false,
+				history: true,
+				fragments: true,
+                                keyboard:true,
+				showNotes: false,
+				autoPlayMedia: true,
+				transition: 'slide',
+				minScale: 0.8,
+				maxScale: 1.5,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+                        Reveal.configure({keyboard: {
+                                13: 'next', // go to the next slide when the ENTER key is pressed
+                                27: function() {}, // do something custom when ESC is pressed
+                                32: function vidplay(){ 
+                                      var video = document.getElementById("video");
+                                      if (video.paused == true) video.play();
+                                      else video.pause();
+                                      }
+                                 }
+                         });
+            //~ setTimeout(Reveal.navigateNext, 1000);
+            //~ setTimeout(Reveal.navigateNext, 2000);
+            //~ setTimeout(Reveal.navigateNext, 3000);
+		</script>
+	</body>
+</html>
