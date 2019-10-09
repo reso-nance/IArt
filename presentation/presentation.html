@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>IA-BDP</title>
+
+		<meta name="description" content="support d'atelier IA">
+		<meta name="author" content="laurent@reso-nance.org">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+                <style>
+                        .reveal section img { background:none; border:none; box-shadow:none; }
+                        .reveal .caption {
+                            position: absolute; 
+                            bottom: 10px;
+                            left: 50%;
+                        }
+                        .col-container{
+							display: flex;
+						}
+						.col{
+							flex: 1;
+						}
+                </style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+								
+				<section data-background-video="media/tmpIntro720p.mp4" data-background-video-loop="loop" data-autoplay>
+					<h2>Intelligence Artificielle</h2>
+					<p>(travail en cours)</p>
+				</section>
+				
+				<section>
+					<h2>déroulé</h2>
+					 <p>des machines et des hommes (15m)</p>
+					 <p>mon premier code ! (20m)</p>
+					 <p>mon IA apprends le piano (20m)</p>
+					 <p>un robot écrivain ? (20m)</p>
+					 <p>mon visage vu par l'IA (15m)</p>
+					 <p>l'IA qui nous entoure (15m)</p>
+				</section>
+					
+				<section>
+					<p>Qu'est-ce qu'un ordinateur ?</p>
+					 <p>
+					   <img width="180" data-src="./media/washing.png">
+					   <img width="180" data-src="./media/phone.png">
+					   <img width="180" data-src="./media/car.png">
+					   <img width="180" data-src="./media/arm.png">
+					   <img width="180" data-src="./media/pickplace.png">
+					</p>
+					<p class="fragment fade-up" data-fragment-index="1">Que sait-il faire ?</p>
+					 <div class="col-container fragment fade-up" data-fragment-index="1" style="margin-top:10px;">
+						   <div class="col" data-fragment-index="1">rapidité</div>
+						   <div class="col">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   </div>
+						   <div class="col"></div>
+						   <div class="col" data-fragment-index="2">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   </div>
+					   </div>
+					   
+					   <div class="col-container fragment fade-up" data-fragment-index="1" style="margin-top:10px;">
+						   <div class="col">précision</div>
+						   <div class="col">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   </div>
+						   <div class="col"></div>
+						   <div class="col" >
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   </div>
+					   </div>		   
+					   
+					   <div class="col-container fragment fade-up" data-fragment-index="1" style="margin-top:10px;">
+						   <div class="col">adaptabilité</div>
+						   <div class="col">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   </div>
+						   <div class="col"></div>
+						   <div class="col">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   </div>
+					   </div>		   
+					   
+					   <div class="col-container fragment fade-up" data-fragment-index="1" style="margin-top:10px;">
+						   <div class="col">imagination</div>
+						   <div class="col">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+							   <img width=30 data-src="./media/homme.png" style="margin: -15px 0px;">
+						   </div>
+						   <div class="col"></div>
+						   <div class="col">
+							   <img width=50 data-src="./media/machine.png" style="margin: -10px 0px;">
+						   </div>
+					   </div>
+				</section>
+				
+				<section>
+					<p>mon premier code</p>
+					<p> <img data-src="./media/drawing.jpg"></p>
+				</section>
+				
+				<section>
+					<p>mon IA apprends le piano</p>
+					<p> <img width=700 data-src="./media/piano.jpg"></p>
+				</section>
+				
+				<section>
+					<p>un robot écrivain ?</p>
+					<p> <img data-src="./media/smash.jpg"></p>
+				</section>
+				
+				<section>
+					<p>mon visage vu par l'IA</p>
+					<section><p> <img width=700 data-src="./media/mathieu.jpg"></p></section>
+					<section><p> <img width=700 data-src="./media/mat1.jpg"></p></section>
+					<section><p> <img width=700 data-src="./media/mat2.jpg"></p></section>
+					<section><p> <img width=700 data-src="./media/mat4.jpg"></p></section>
+					<section><p> <img width=700 data-src="./media/mat3.jpg"></p></section>
+				</section>
+				
+				<section>
+					<p style="margin-bottom:100px;">l'IA qui nous entoure</p>
+					<p>
+					   <img width="250" data-src="./media/car.png">
+					   <img width="200" data-src="./media/captcha.png">
+					   <img width="250" data-src="./media/amazonEcho.png">
+					   <img width="200" data-src="./media/supermarket.png">
+					</p>
+				</section>
+				
+				
+				<section>
+					<h2 style="margin-bottom:50px">fiche technique</h2>
+					<p>tout public, 8 à 12 participants</p>
+					<p>durée : environ 1h45</p>
+					<p>temps d'installation : 1h</p>
+					<p style="margin-top:50px;"><b>besoins techniques:</b></p>
+					<ul>
+						<li>4 tables</li>
+						<li>1 prise électrique</li>
+						<li>1 espace de projection,<br> mise au noir partielle du lieu</li>
+					</ul>
+				</section>
+				
+				
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				controls: true,
+				slideNumber: false,
+				history: true,
+				fragments: true,
+                                keyboard:true,
+				showNotes: false,
+				autoPlayMedia: true,
+				transition: 'slide',
+				minScale: 0.8,
+				maxScale: 1.5,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+                        Reveal.configure({keyboard: {
+                                13: 'next', // go to the next slide when the ENTER key is pressed
+                                27: function() {}, // do something custom when ESC is pressed
+                                32: function vidplay(){ 
+                                      var video = document.getElementById("video");
+                                      if (video.paused == true) video.play();
+                                      else video.pause();
+                                      }
+                                 }
+                         });
+            //~ setTimeout(Reveal.navigateNext, 1000);
+            //~ setTimeout(Reveal.navigateNext, 2000);
+            //~ setTimeout(Reveal.navigateNext, 3000);
+		</script>
+	</body>
+</html>
